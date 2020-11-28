@@ -4,14 +4,19 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 from pptx_generator import generate_presentation
+import uuid, os, shutil
 
 @app.route('/presentation', methods=['POST'])
-def hello():
+def create_presentation():
+    session_id = str(uuid.uuid4())
     incident_no = request.form.get('incident_no')
     stop_message = request.form.get('stop_message')
-    pictures = request.files.getlist('picture')
-    for picture in pictures:
-        picture.save(f'buffer_evidences/{picture.filename}')
-    presentation = generate_presentation(incident_no, stop_message)
-    presentation.save('draft.pptx')
-    return send_file('draft.pptx', attachment_filename="download.pptx", as_attachment=True)
+    call_text = request.files.get('call_text')
+    os.mkdir(session_id)
+    call_text.save(f'{session_id}/{call_text.filename}')
+    presentation = generate_presentation(incident_no, stop_message, session_id)
+    presentation.save(f'{session_id}/presentation.pptx')
+    # TODO: set filename to location of decam
+    response = send_file(f'{session_id}/presentation.pptx', attachment_filename="presentation.pptx", as_attachment=True)
+    shutil.rmtree(f'./{session_id}')
+    return response

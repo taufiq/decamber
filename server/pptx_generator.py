@@ -4,11 +4,12 @@ from pptx.util import Inches
 import pprint
 import os
 
-evidences_path = list(map(lambda evidence: f'./buffer_evidences/{evidence}', list(
-    filter(lambda evidence: evidence.endswith(''), os.listdir('./buffer_evidences')))))
 
-def generate_presentation(incident_no: str, summary: str) -> Presentation:
+def generate_presentation(incident_no: str, summary: str, session_id) -> Presentation:
     presentation: Presentation = Presentation()
+    evidences_path = list(map(lambda evidence: f'./{session_id}/{evidence}', list(
+    filter(lambda evidence: evidence.endswith(''), os.listdir(f'./{session_id}')))))
+
 
     first_slide = presentation.slides.add_slide(presentation.slide_layouts[0])
 
