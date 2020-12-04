@@ -2,10 +2,10 @@ import React, {useCallback} from 'react'
 import {useDropzone} from 'react-dropzone'
 import PhotoPreviewListItem from './PhotoPreviewListItem'
 
-function MyDropzone({droppedFiles, setDroppedFiles}) {
-  const onDrop = useCallback((files) => {
-    setDroppedFiles([...droppedFiles, ...files])
-  })
+function MyDropzone({droppedFiles, setDroppedFiles, onDrop}) {
+  // const onDrop = useCallback((files) => {
+  //   setDroppedFiles([...droppedFiles, ...files])
+  // })
   const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, maxFiles: 1, accept: 'image/*'})
 
   return (

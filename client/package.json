@@ -21,6 +21,7 @@
     "react-dom": "^17.0.1",
     "react-dropzone": "^11.2.4",
     "react-hook-form": "^6.11.5",
+    "react-image-crop": "^8.6.6",
     "react-scripts": "4.0.1",
     "web-vitals": "^0.2.4"
   },

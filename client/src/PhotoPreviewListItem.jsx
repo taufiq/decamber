@@ -12,7 +12,6 @@ function PhotoPreviewListItem({ file, onClose }) {
             onClick={onClose}
           />
           <img src={file.preview}  className="p-2 img-fluid"/>
-          <p className="m-0 ml-3 text-center">{file.name}</p>
         </div>
         <div className="col-10" />
       </div>
