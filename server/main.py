@@ -6,14 +6,17 @@ CORS(app)
 from pptx_generator import generate_presentation
 import uuid, os, shutil
 
+categories = ['call_text', 'detector', 'sub_alarm_panel', 'main_alarm_panel']
 @app.route('/presentation', methods=['POST'])
 def create_presentation():
     session_id = str(uuid.uuid4())
     incident_no = request.form.get('incident_no')
     stop_message = request.form.get('stop_message')
-    call_text = request.files.get('call_text')
     os.mkdir(session_id)
-    call_text.save(f'{session_id}/{call_text.filename}')
+    for index, category in enumerate(categories):
+        image = request.files.get(category)
+        if image is not None:
+            image.save(f'{session_id}/{index}.jpeg')
     presentation = generate_presentation(incident_no, stop_message, session_id)
     presentation.save(f'{session_id}/presentation.pptx')
     # TODO: set filename to location of decam
