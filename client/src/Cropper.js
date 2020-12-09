@@ -6,7 +6,7 @@ import ReactCrop from 'react-image-crop'
 const pixelRatio = window.devicePixelRatio || 1;
 
 function Cropper({ onConfirm, imageToCrop }) {
-    const [crop, setCrop] = useState({})
+    const [crop, setCrop] = useState({ unit: '%', width: 100, height: 100 })
     const imageRef = useRef({})
 
     async function onSave() {
@@ -73,6 +73,7 @@ function getCroppedImg(image, crop, fileName) {
     // As a blob
     return new Promise((resolve, reject) => {
       canvas.toBlob(blob => {
+        console.log(blob)
         blob.name = fileName;
         resolve(blob);
       }, 'image/jpeg', 1);
