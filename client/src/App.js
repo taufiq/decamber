@@ -26,9 +26,8 @@ function App() {
     formData.append("detector", form.detector[0])
     formData.append("sub_alarm_panel", form.sub_alarm_panel[0])
     formData.append("main_alarm_panel", form.main_alarm_panel[0])
-    debugger
 
-    const response = axios.post("http://127.0.0.1:5000/presentation", formData, { responseType: 'blob', headers: { "Content-Type": "multipart/form-data" } })
+    const response = axios.post("http://172.20.10.6:5000/presentation", formData, { responseType: 'blob', headers: { "Content-Type": "multipart/form-data" } })
     response
       .then(result => {
         const generatedPresentation = result.data
