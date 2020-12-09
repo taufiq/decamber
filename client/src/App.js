@@ -9,63 +9,16 @@ import '@fortawesome/fontawesome-free/css/all.css'
 import { Controller, useForm } from 'react-hook-form'
 import { snakeCase, capitalCase } from 'change-case'
 import 'react-image-crop/dist/ReactCrop.css';
-import ReactCrop from 'react-image-crop';
+import Cropper from './Cropper';
 
 const photoCategories = ["Call Text", "Detector", "Sub Alarm Panel", "Main Alarm Panel"]
-const pixelRatio = window.devicePixelRatio || 1;
 
 
 function App() {
   const { register, handleSubmit, control, setValue } = useForm()
-  const [crop, setCrop] = useState({ width: 30, height: 30 })
   const [imageToCrop, setimageToCrop] = useState({ name: "", file: "" })
-  const imageRef = useRef({})
-
-  /**
- * @param {HTMLImageElement} image - Image File Object
- * @param {Object} crop - crop Object
- * @param {String} fileName - Name of the returned file in Promise
- */
-  function getCroppedImg(image, crop, fileName) {
-    const canvas = document.createElement('canvas');
-    canvas.width = crop.width;
-    canvas.height = crop.height;
-    const ctx = canvas.getContext('2d');
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height
-
-    canvas.width = crop.width * pixelRatio;
-    canvas.height = crop.height * pixelRatio;
-
-    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-    ctx.imageSmoothingQuality = "high";
-
-    ctx.drawImage(
-      image,
-      crop.x * scaleX,
-      crop.y * scaleY,
-      crop.width * scaleX,
-      crop.height * scaleY,
-      0,
-      0,
-      crop.width,
-      crop.height,
-    );
-
-    // As Base64 string
-    // const base64Image = canvas.toDataURL('image/jpeg');
-
-    // As a blob
-    return new Promise((resolve, reject) => {
-      canvas.toBlob(blob => {
-        blob.name = fileName;
-        resolve(blob);
-      }, 'image/jpeg', 1);
-    });
-  }
 
   const onFormSubmit = (form) => {
-    console.log(form)
     const formData = new FormData()
     formData.append("incident_no", form.incident_no)
     formData.append("stop_message", form.stop_message)
@@ -84,16 +37,15 @@ function App() {
       })
   }
 
-  const onImageDrop = (imageFiles, name) => {
+  const onImageDrop = (imageFiles, category) => {
     const imageFile = imageFiles[0]
     const src = URL.createObjectURL(imageFile)
-    setimageToCrop({ name, file: imageFile, src })
+    setimageToCrop({ category, file: imageFile, src })
   }
 
-  const onImageCropConfirm = async () => {
-    const croppedImage = await getCroppedImg(imageRef.current, crop, imageToCrop.name)
-    setValue(imageToCrop.name, [croppedImage])
-    setimageToCrop({ name: "", file: "" })
+  const onImageCropConfirm = async (category, croppedImageBlob) => {
+    setValue(category, [croppedImageBlob])
+    setimageToCrop({ category: "", file: "" })
   }
 
   return (
@@ -117,35 +69,24 @@ function App() {
               control={control}
               name={`${snakeCase(photoCategory)}`}
               render={({ onChange, value }) =>
-                <Dropzone register={register} setDroppedFiles={onChange} droppedFiles={value} onDrop={(files) => onImageDrop(files, `${snakeCase(photoCategory)}`)} />
+                <Dropzone
+                  register={register}
+                  setDroppedFiles={onChange}
+                  droppedFiles={value}
+                  onDrop={(files) => onImageDrop(files, `${snakeCase(photoCategory)}`)}
+                />
               }
               defaultValue={[]}
             />
           </Form.Group>
         )
         }
-        {imageToCrop.name &&
-        <>
-          <Modal show={true}>
-              <Modal.Header closeButton>
-                <Modal.Title>{capitalCase(imageToCrop.name)}</Modal.Title>
-              </Modal.Header>
-
-              <Modal.Body>
-                <ReactCrop
-                  onImageLoaded={(img) => { imageRef.current = img }}
-                  src={imageToCrop.src}
-                  crop={crop}
-                  onChange={newCrop => setCrop(newCrop)}
-                />
-              </Modal.Body>
-
-              <Modal.Footer>
-                <Button variant="secondary">Close</Button>
-                <Button variant="primary" onClick={onImageCropConfirm}>Save changes</Button>
-              </Modal.Footer>
-          </Modal>
-        </>
+        {
+          imageToCrop.category &&
+          <Cropper
+            onConfirm={onImageCropConfirm}
+            imageToCrop={imageToCrop}
+          />
         }
         <Button variant="primary" type="submit">
           Submit
