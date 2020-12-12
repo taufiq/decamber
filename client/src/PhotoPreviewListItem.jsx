@@ -5,7 +5,7 @@ function PhotoPreviewListItem({ file, onClose }) {
   return (
     <div className="container">
       <div className="row">
-        <div className="col border flex-column rounded p-1 mt-2 bg-white">
+        <div className="col border flex-column rounded p-1 mt-2 mx-5 bg-white">
           <i
             className="fas fa-times-circle position-absolute"
             style={{ right: -16, top: -16, fontSize: '32px'}}
@@ -13,7 +13,6 @@ function PhotoPreviewListItem({ file, onClose }) {
           />
           <img src={file.preview}  className="p-2 img-fluid"/>
         </div>
-        <div className="col-10" />
       </div>
     </div>
   ) 
