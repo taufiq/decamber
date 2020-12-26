@@ -5,14 +5,39 @@ from PIL import Image
 import pprint
 import os
 
-def get_resized_image_width(original_size, height):
-    return original_size[0] / original_size[1] * height
-
 def get_size(path_to_image):
     image = Image.open(path_to_image)
     dpi = image.info.get('dpi')
 
     return (image.width, image.height)
+
+def set_header_of(a_slide, header_text):
+    a_slide.placeholders[0].text_frame.text = header_text
+
+def set_body_of(a_slide, body_text):
+    a_slide.placeholders[1].text_frame.text = body_text
+
+def add_picture_to(a_slide, image_path, slide_width):
+    slide_body = a_slide.placeholders[1]
+    resized_image_width, resized_image_height = resize_image(get_size(image_path), given_height=slide_body.height)
+
+    top = slide_body.top
+    left = slide_width / 2 - resized_image_width / 2
+
+    a_slide.shapes.add_picture(image_path, left, top, height=resized_image_height)
+
+def resize_image(original_size, given_height=None, given_width=None) -> (int, int):
+    if given_height is not None and given_width is not None:
+        raise "Only provide one argument"
+
+    if given_height:
+        resized_width = original_size[0] / original_size[1] * given_height
+        return (resized_width, given_height)
+
+    if given_width:
+        resized_height = original_size[1] / original_size[0] * given_width
+        return (given_width, resized_height)
+
 
 def generate_presentation(incident_no: str, summary: str, session_id) -> Presentation:
     presentation: Presentation = Presentation()
@@ -21,43 +46,17 @@ def generate_presentation(incident_no: str, summary: str, session_id) -> Present
 
     first_slide = presentation.slides.add_slide(presentation.slide_layouts[0])
 
-    for idx, shape in enumerate(first_slide.placeholders):
-        placeholder_format = shape.placeholder_format
-        shape: SlidePlaceholder = shape
-        shape.placeholder_format
-        if shape.has_text_frame:
-            if idx == 0:  # Center Title
-                shape.text_frame.clear()
-                shape.text_frame.text = "Decam report"
-            if idx == 1:  # Subtitle
-                shape.text_frame.clear()
-                shape.text_frame.text = f"Incident Number {incident_no}"
+    set_header_of(first_slide, header_text="Decam report")
+    set_body_of(first_slide, body_text=f"Incident Number {incident_no}")
 
-    for evidence in evidences_path:
+    for evidence_path in evidences_path:
         slide = presentation.slides.add_slide(presentation.slide_layouts[1])
-        slide.placeholders[0].text_frame.text = incident_no
-        image_height = slide.placeholders[1].height
-        image_width = get_resized_image_width(get_size(evidence), image_height)
-        top = slide.placeholders[1].top
-        left = presentation.slide_width / 2 - image_width / 2
-        slide.shapes.add_picture(evidence, left, top, height=image_height)
+        set_header_of(slide, header_text=incident_no)
+        add_picture_to(slide, image_path=evidence_path, slide_width=presentation.slide_width)
 
     stop_message_slide = presentation.slides.add_slide(presentation.slide_layouts[1])
-
-    for idx, shape in enumerate(stop_message_slide.placeholders):
-        placeholder_format = shape.placeholder_format
-        print(type(placeholder_format.type),
-            placeholder_format.type._member_name, placeholder_format.idx)
-        shape: SlidePlaceholder = shape
-        shape.placeholder_format
-        if shape.has_text_frame:
-            if idx == 0:  # 'Title'
-                shape.text_frame.clear()
-                shape.text_frame.text = "Stop Message"
-            if idx == 1:  # Subtitle
-                shape.text_frame.clear()
-                shape.text_frame.text = summary
-
+    set_header_of(stop_message_slide, header_text="Stop Message")
+    set_body_of(stop_message_slide, body_text=summary)
 
     
     return presentation
