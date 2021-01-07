@@ -10,15 +10,28 @@ import { Controller, useForm } from 'react-hook-form'
 import { snakeCase, capitalCase } from 'change-case'
 import 'react-image-crop/dist/ReactCrop.css';
 import Cropper from './Cropper';
+import * as Generator from './Generator';
 
 const photoCategories = ["Call Text", "Detector", "Sub Alarm Panel", "Main Alarm Panel"]
 
 
+async function convertFileToBase64(file) {
+  if (!file) {
+    return null
+  }
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = error => resolve(null)
+  })
+}
+
 function App() {
-  const { register, handleSubmit, control, setValue } = useForm()
+  const { register, handleSubmit, control, setValue: setFormValue } = useForm()
   const [imageToCrop, setimageToCrop] = useState({ name: "", file: "" })
 
-  const onFormSubmit = (form) => {
+  const onFormSubmit = async (form) => {
     const formData = new FormData()
     formData.append("incident_no", form.incident_no)
     formData.append("stop_message", form.stop_message)
@@ -27,13 +40,22 @@ function App() {
     formData.append("sub_alarm_panel", form.sub_alarm_panel[0])
     formData.append("main_alarm_panel", form.main_alarm_panel[0])
 
-    const response = axios.post("http://172.20.10.6:5000/presentation", formData, { responseType: 'blob', headers: { "Content-Type": "multipart/form-data" } })
-    response
-      .then(result => {
-        const generatedPresentation = result.data
-        const blob = new Blob([generatedPresentation])
-        saveAs(blob, 'download.pptx')
-      })
+    let generatedPptx = Generator.createPowerPoint()
+    
+    await Generator.populateWithImages(generatedPptx, {
+      call_text: { image: await convertFileToBase64(form.call_text.blob[0]), size: form.call_text.size },
+      detector: { image: await convertFileToBase64(form.detector.blob[0]), size: form.detector.size },
+      sub_alarm_panel: { image: await convertFileToBase64(form.sub_alarm_panel.blob[0]), size: form.sub_alarm_panel.size },
+      main_alarm_panel: { image: await convertFileToBase64(form.main_alarm_panel.blob[0]), size: form.main_alarm_panel.size },
+    }, form.incident_no)
+    Generator.savePowerPoint(generatedPptx, 'DECAM.pptx')
+    // const response = axios.post("http://127.0.0.1:5000/presentation", formData, { responseType: 'blob', headers: { "Content-Type": "multipart/form-data" } })
+    // response
+    //   .then(result => {
+    //     const generatedPresentation = result.data
+    //     const blob = new Blob([generatedPresentation])
+    //     saveAs(blob, 'download.pptx')
+    //   })
   }
 
   const onImageDrop = (imageFiles, category) => {
@@ -42,24 +64,24 @@ function App() {
     setimageToCrop({ category, file: imageFile, src })
   }
 
-  const onImageCropConfirm = async (category, croppedImageBlob) => {
-    setValue(category, [croppedImageBlob])
+  const onImageCropConfirm = async (category, { croppedImage, size }) => {
+    setFormValue(category, { blob: [croppedImage], size })
     setimageToCrop({ category: "", file: "" })
   }
 
   return (
     <Container>
       <Navbar bg="light">
-        <Navbar.Brand>Decamber</Navbar.Brand>
+        <Navbar.Brand>Decam PowerPoint Generator</Navbar.Brand>
       </Navbar>
       <Form onSubmit={handleSubmit(onFormSubmit)}>
         <Form.Group>
           <Form.Label>Incident No.</Form.Label>
-          <Form.Control ref={register} name="incident_no" placeholder="A123/21312D" />
+          <Form.Control ref={register} name="incident_no" placeholder="" />
         </Form.Group>
         <Form.Group>
           <Form.Label>Stop Message</Form.Label>
-          <Form.Control ref={register} name="stop_message" as="textarea" rows={4} placeholder="Zone 3 had sprinkler schwoooooo" />
+          <Form.Control ref={register} name="stop_message" as="textarea" rows={4} placeholder="" />
         </Form.Group>
         {photoCategories.map(photoCategory =>
           <Form.Group key={photoCategory}>
@@ -71,11 +93,11 @@ function App() {
                 <Dropzone
                   register={register}
                   setDroppedFiles={onChange}
-                  droppedFiles={value}
+                  droppedFiles={value.blob}
                   onDrop={(files) => onImageDrop(files, `${snakeCase(photoCategory)}`)}
                 />
               }
-              defaultValue={[]}
+              defaultValue={{ blob: [], size: {} }}
             />
           </Form.Group>
         )

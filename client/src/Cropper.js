@@ -10,8 +10,8 @@ function Cropper({ onConfirm, imageToCrop }) {
     const imageRef = useRef({})
 
     async function onSave() {
-        const croppedImage = await getCroppedImg(imageRef.current, crop, imageToCrop.category)
-        onConfirm(imageToCrop.category, croppedImage)
+        const { blob: croppedImage, size } = await getCroppedImg(imageRef.current, crop, imageToCrop.category)
+        onConfirm(imageToCrop.category, { croppedImage, size })
     }
 
     return (
@@ -75,7 +75,7 @@ function getCroppedImg(image, crop, fileName) {
       canvas.toBlob(blob => {
         console.log(blob)
         blob.name = fileName;
-        resolve(blob);
+        resolve({ blob, size: {  width: crop.width * scaleX, height: crop.height * scaleY } });
       }, 'image/jpeg', 1);
     });
   }
