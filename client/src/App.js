@@ -107,6 +107,7 @@ function App() {
           <Cropper
             onConfirm={onImageCropConfirm}
             imageToCrop={imageToCrop}
+            onClose={() => setimageToCrop({ name: "", file: "" })}
           />
         }
         <Button variant="primary" type="submit">

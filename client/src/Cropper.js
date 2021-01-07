@@ -5,7 +5,7 @@ import ReactCrop from 'react-image-crop'
 
 const pixelRatio = window.devicePixelRatio || 1;
 
-function Cropper({ onConfirm, imageToCrop }) {
+function Cropper({ onConfirm, imageToCrop, onClose }) {
     const [crop, setCrop] = useState({ unit: '%', width: 100, height: 100 })
     const imageRef = useRef({})
 
@@ -17,7 +17,7 @@ function Cropper({ onConfirm, imageToCrop }) {
     return (
         <>
             <Modal show>
-                <Modal.Header closeButton>
+                <Modal.Header>
                     <Modal.Title>{capitalCase(imageToCrop.category)}</Modal.Title>
                 </Modal.Header>
 
@@ -31,7 +31,7 @@ function Cropper({ onConfirm, imageToCrop }) {
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <Button variant="secondary">Close</Button>
+                    <Button variant="secondary" onClick={onClose}>Close</Button>
                     <Button variant="primary" onClick={onSave}>Save changes</Button>
                 </Modal.Footer>
             </Modal>
