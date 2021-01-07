@@ -77,7 +77,7 @@ function App() {
       <Form onSubmit={handleSubmit(onFormSubmit)}>
         <Form.Group>
           <Form.Label>Incident No.</Form.Label>
-          <Form.Control ref={register} name="incident_no" placeholder="" />
+          <Form.Control required ref={register} name="incident_no" placeholder="" />
         </Form.Group>
         {/* <Form.Group>
           <Form.Label>Stop Message</Form.Label>
