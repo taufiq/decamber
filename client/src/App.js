@@ -72,7 +72,7 @@ function App() {
   return (
     <Container>
       <Navbar bg="light">
-        <Navbar.Brand>Decam PowerPoint Generator</Navbar.Brand>
+        <Navbar.Brand>DECAM Slide Deck Generator</Navbar.Brand>
       </Navbar>
       <Form onSubmit={handleSubmit(onFormSubmit)}>
         <Form.Group>
