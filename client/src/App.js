@@ -79,10 +79,10 @@ function App() {
           <Form.Label>Incident No.</Form.Label>
           <Form.Control ref={register} name="incident_no" placeholder="" />
         </Form.Group>
-        <Form.Group>
+        {/* <Form.Group>
           <Form.Label>Stop Message</Form.Label>
           <Form.Control ref={register} name="stop_message" as="textarea" rows={4} placeholder="" />
-        </Form.Group>
+        </Form.Group> */}
         {photoCategories.map(photoCategory =>
           <Form.Group key={photoCategory}>
             <Form.Label>{photoCategory}</Form.Label>

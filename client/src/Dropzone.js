@@ -10,7 +10,7 @@ function MyDropzone({droppedFiles, setDroppedFiles, onDrop}) {
       (
       droppedFiles?.map(droppedFile => {
               const alteredFile = Object.assign(droppedFile, { preview: URL.createObjectURL(droppedFile)})
-              return <PhotoPreviewListItem key={alteredFile.path} file={alteredFile} onClose={() => setDroppedFiles([])}/>
+              return <PhotoPreviewListItem key={alteredFile.path} file={alteredFile} onClose={() => setDroppedFiles({ blob: [], size: {} })}/>
             })
 			)
     :
