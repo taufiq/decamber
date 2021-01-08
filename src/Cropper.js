@@ -16,7 +16,8 @@ function Cropper({ onConfirm, imageToCrop, onClose }) {
 
     return (
         <>
-            <Modal show>
+            <Modal show dialogClassName={"w-75 mx-auto"}>
+                
                 <Modal.Header>
                     <Modal.Title>{capitalCase(imageToCrop.category)}</Modal.Title>
                 </Modal.Header>
