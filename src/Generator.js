@@ -49,18 +49,18 @@ function populateWithImages(pptx, categories, incident_no) {
         if (isEmpty) continue
         let slide = pptx.addSlide("CONTENT_SLIDE")
         slide.addText(incident_no, { placeholder: 'title' })
-        // let calculatedWidth, calculatedHeight
-        // if (information.size.height > information.size.width) {
-        //     calculatedWidth = information.size.width * (62.28 / information.size.height)
-        //     calculatedHeight = 62.28
-        //     console.log(calculatedWidth, calculatedHeight)
-        // } else {
-        //     calculatedHeight = 90 * information.size.height / information.size.width
-        //     calculatedWidth = 90
-        //     console.log(calculatedWidth, calculatedHeight)
-        // }
+        let scaleX = 9 / information.size.width
+        let scaleY = 3.5 / information.size.height
+        let calculatedWidth, calculatedHeight
+        if (scaleY < scaleX) {
+            calculatedWidth = information.size.width * scaleY
+            calculatedHeight = 3.5
+        } else {
+            calculatedHeight = scaleX * information.size.height
+            calculatedWidth = 9
+        }
 
-        slide.addImage({ data: information.image, h: information.size.height / 100, w: information.size.width / 100 , y: '23.3%', x: (10-9)/2, sizing: { type: 'contain', w: 9, h: 3.5 } })
+        slide.addImage({ data: information.image, h: calculatedHeight, w: calculatedWidth , y: '23.3%', x: (10-calculatedWidth)/2 })
     }
 
 }
