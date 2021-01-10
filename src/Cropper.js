@@ -5,13 +5,13 @@ import ReactCrop from 'react-image-crop'
 
 const pixelRatio = window.devicePixelRatio || 1;
 
-function Cropper({ onConfirm, imageToCrop, onClose }) {
+function Cropper({ title, onConfirm, imageToCrop, onClose }) {
     const [crop, setCrop] = useState({ unit: '%', width: 100, height: 100 })
     const imageRef = useRef({})
 
     async function onSave() {
         const { blob: croppedImage, size } = await getCroppedImg(imageRef.current, crop, imageToCrop.category)
-        onConfirm(imageToCrop.category, { croppedImage, size })
+        onConfirm({ croppedImage, size })
     }
 
     return (
@@ -19,7 +19,7 @@ function Cropper({ onConfirm, imageToCrop, onClose }) {
             <Modal show dialogClassName={"w-75 mx-auto"}>
                 
                 <Modal.Header>
-                    <Modal.Title>{capitalCase(imageToCrop.category)}</Modal.Title>
+                    <Modal.Title>{title}</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>
