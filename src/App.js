@@ -7,7 +7,7 @@ import '@fortawesome/fontawesome-free/css/all.css'
 import { Controller, useForm } from 'react-hook-form'
 import 'react-image-crop/dist/ReactCrop.css';
 import Cropper from './Cropper';
-import * as Generator from './Generator';
+import * as PptxGenerator from './pptx/Generator';
 
 const photoCategories = [
   {
@@ -46,15 +46,15 @@ function App() {
   const [imageToCrop, setimageToCrop] = useState({ photoCategory: { id: "", formLabel: "" }, file: "" })
 
   const onFormSubmit = async (form) => {
-    let generatedPptx = Generator.createPowerPoint()
+    let generatedPptx = PptxGenerator.createPowerPoint()
     
-    await Generator.populateWithImages(generatedPptx, {
+    await PptxGenerator.populateWithImages(generatedPptx, {
       detector: { image: await convertFileToBase64(form.detector.blob[0]), size: form.detector.size },
       sub_alarm_panel: { image: await convertFileToBase64(form.sub_alarm_panel.blob[0]), size: form.sub_alarm_panel.size },
       main_alarm_panel: { image: await convertFileToBase64(form.main_alarm_panel.blob[0]), size: form.main_alarm_panel.size },
       others: { image: await convertFileToBase64(form.others.blob[0]), size: form.others.size },
     }, form.incident_no)
-    Generator.savePowerPoint(generatedPptx, 'DECAM.pptx')
+    PptxGenerator.savePowerPoint(generatedPptx, 'DECAM.pptx')
   }
 
   const onImageDrop = (imageFiles, photoCategory) => {
