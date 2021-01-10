@@ -1,4 +1,3 @@
-import { capitalCase } from 'change-case';
 import React, { useState, useRef } from 'react'
 import { Modal, Button } from 'react-bootstrap'
 import ReactCrop from 'react-image-crop'

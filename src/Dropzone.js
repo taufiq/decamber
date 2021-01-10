@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react'
+import React from 'react'
 import {useDropzone} from 'react-dropzone'
 import PhotoPreviewListItem from './PhotoPreviewListItem'
 
@@ -6,7 +6,7 @@ function MyDropzone({droppedFiles, setDroppedFiles, onDrop}) {
   const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, maxFiles: 1, accept: 'image/*'})
 
   return (
-    droppedFiles?.length != 0 ?
+    droppedFiles?.length !== 0 ?
       (
       droppedFiles?.map(droppedFile => {
               const alteredFile = Object.assign(droppedFile, { preview: URL.createObjectURL(droppedFile)})

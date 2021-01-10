@@ -1,13 +1,10 @@
-import { Form, Col, Container, Navbar, Row, Button, Modal } from 'react-bootstrap'
+import { Form, Container, Navbar, Button } from 'react-bootstrap'
 import Dropzone from './Dropzone'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
-import React, { useState, useRef } from 'react';
-import axios from 'axios'
-import { saveAs } from 'file-saver'
+import React, { useState } from 'react';
 import '@fortawesome/fontawesome-free/css/all.css'
 import { Controller, useForm } from 'react-hook-form'
-import { snakeCase, capitalCase } from 'change-case'
 import 'react-image-crop/dist/ReactCrop.css';
 import Cropper from './Cropper';
 import * as Generator from './Generator';
