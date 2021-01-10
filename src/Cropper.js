@@ -5,20 +5,21 @@ import ReactCrop from 'react-image-crop'
 
 const pixelRatio = window.devicePixelRatio || 1;
 
-function Cropper({ onConfirm, imageToCrop }) {
+function Cropper({ title, onConfirm, imageToCrop, onClose }) {
     const [crop, setCrop] = useState({ unit: '%', width: 100, height: 100 })
     const imageRef = useRef({})
 
     async function onSave() {
-        const croppedImage = await getCroppedImg(imageRef.current, crop, imageToCrop.category)
-        onConfirm(imageToCrop.category, croppedImage)
+        const { blob: croppedImage, size } = await getCroppedImg(imageRef.current, crop, imageToCrop.category)
+        onConfirm({ croppedImage, size })
     }
 
     return (
         <>
-            <Modal show>
-                <Modal.Header closeButton>
-                    <Modal.Title>{capitalCase(imageToCrop.category)}</Modal.Title>
+            <Modal show dialogClassName={"w-75 mx-auto"}>
+                
+                <Modal.Header>
+                    <Modal.Title>{title}</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>
@@ -31,7 +32,7 @@ function Cropper({ onConfirm, imageToCrop }) {
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <Button variant="secondary">Close</Button>
+                    <Button variant="secondary" onClick={onClose}>Close</Button>
                     <Button variant="primary" onClick={onSave}>Save changes</Button>
                 </Modal.Footer>
             </Modal>
@@ -75,7 +76,7 @@ function getCroppedImg(image, crop, fileName) {
       canvas.toBlob(blob => {
         console.log(blob)
         blob.name = fileName;
-        resolve(blob);
+        resolve({ blob, size: {  width: crop.width * scaleX, height: crop.height * scaleY } });
       }, 'image/jpeg', 1);
     });
   }
