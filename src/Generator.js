@@ -8,8 +8,6 @@ function createPowerPoint() {
     let pptx = new PptxGenJs()
     pptx.defineSlideMaster({
         title: 'TITLE_SLIDE',
-        // background: objBkg,
-        //bkgd: objBkg, // TEST: @deprecated
         objects: [
             { 'image': { data: TITLE_SLIDE_BG, h: '100%', w: '100%' } },
             {
@@ -22,8 +20,6 @@ function createPowerPoint() {
     });
     pptx.defineSlideMaster({
         title: 'CONTENT_SLIDE',
-        // background: objBkg,
-        //bkgd: objBkg, // TEST: @deprecated
         objects: [
             { 'image': { data: CONTENT_SLIDE_BG, h: '100%', w: '100%' } },
             {
@@ -32,11 +28,6 @@ function createPowerPoint() {
                     text: "Title here",
                 },
             },
-            // {
-            //     placeholder: {
-            //         options: { name: "image", type: "image", x: '50%', y: '23.3%', h: '62.28%', w: '0%' },
-            //     },
-            // },
         ]
     });
     return pptx

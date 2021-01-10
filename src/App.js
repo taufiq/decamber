@@ -49,13 +49,6 @@ function App() {
       main_alarm_panel: { image: await convertFileToBase64(form.main_alarm_panel.blob[0]), size: form.main_alarm_panel.size },
     }, form.incident_no)
     Generator.savePowerPoint(generatedPptx, 'DECAM.pptx')
-    // const response = axios.post("http://127.0.0.1:5000/presentation", formData, { responseType: 'blob', headers: { "Content-Type": "multipart/form-data" } })
-    // response
-    //   .then(result => {
-    //     const generatedPresentation = result.data
-    //     const blob = new Blob([generatedPresentation])
-    //     saveAs(blob, 'download.pptx')
-    //   })
   }
 
   const onImageDrop = (imageFiles, category) => {
