@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React from 'react'
 
 async function convertFileToBase64(file) {
   if (!file) {

@@ -87,7 +87,7 @@ function App() {
                 <PhotoUploadList
                   photoCategoryId={photoCategory.id}
                   photos={value}
-                  setPhotos={(photo) => setImageToCrop({
+                  onPhotoUpload={(photo) => setImageToCrop({
                     photoCategory,
                     src: photo
                   })}

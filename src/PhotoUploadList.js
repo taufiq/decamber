@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PhotoUploadListItem from './PhotoUploadListItem'
 import PhotoUploadCard from './PhotoUploadCard'
 
-function PhotoUploadList({ photoCategoryId, photos, setPhotos }) {
+function PhotoUploadList({ photoCategoryId, photos, onPhotoUpload }) {
     return (
         <div className="container d-flex" style={{ height: '20vh' }}>
             {
@@ -12,7 +12,7 @@ function PhotoUploadList({ photoCategoryId, photos, setPhotos }) {
             }
             <PhotoUploadCard
                 photoCategoryId={photoCategoryId}
-                onPhotoUpload={setPhotos}/>
+                onPhotoUpload={onPhotoUpload}/>
         </div>
     )
 }
