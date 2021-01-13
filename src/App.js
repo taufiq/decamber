@@ -1,5 +1,4 @@
 import { Form, Container, Navbar, Button } from 'react-bootstrap'
-import Dropzone from './Dropzone'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
 import React, { useState } from 'react';
@@ -30,18 +29,6 @@ const photoCategories = [
 ]
 
 
-async function convertFileToBase64(file) {
-  if (!file) {
-    return null
-  }
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.readAsDataURL(file)
-    reader.onload = () => resolve(reader.result)
-    reader.onerror = error => resolve(null)
-  })
-}
-
 function App() {
   const { register, handleSubmit, control, setValue: setFormValue, getValues } = useForm()
   const [imageToCrop, setImageToCrop] = useState({ photoCategory: { id: "", formLabel: "" }, src: "" })
@@ -59,7 +46,6 @@ function App() {
 
   const onImageCropConfirm = async (category, { data, size }) => {
     setFormValue(category, [...getValues(category), { data, size }])
-    console.log(imageToCrop)
     setImageToCrop({ photoCategory: { id: "", formLabel: "" }, src: "" })
   }
 
