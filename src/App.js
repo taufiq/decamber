@@ -8,6 +8,7 @@ import { Controller, useForm } from 'react-hook-form'
 import 'react-image-crop/dist/ReactCrop.css';
 import Cropper from './Cropper';
 import * as PptxGenerator from './pptx/Generator';
+import PhotoUploadList from './PhotoUploadList';
 
 const photoCategories = [
   {
@@ -42,30 +43,24 @@ async function convertFileToBase64(file) {
 }
 
 function App() {
-  const { register, handleSubmit, control, setValue: setFormValue } = useForm()
-  const [imageToCrop, setimageToCrop] = useState({ photoCategory: { id: "", formLabel: "" }, file: "" })
+  const { register, handleSubmit, control, setValue: setFormValue, getValues } = useForm()
+  const [imageToCrop, setImageToCrop] = useState({ photoCategory: { id: "", formLabel: "" }, src: "" })
 
   const onFormSubmit = async (form) => {
     let generatedPptx = PptxGenerator.createPowerPoint()
-    
     await PptxGenerator.populateWithImages(generatedPptx, {
-      detector: { image: await convertFileToBase64(form.detector.blob[0]), size: form.detector.size },
-      sub_alarm_panel: { image: await convertFileToBase64(form.sub_alarm_panel.blob[0]), size: form.sub_alarm_panel.size },
-      main_alarm_panel: { image: await convertFileToBase64(form.main_alarm_panel.blob[0]), size: form.main_alarm_panel.size },
-      others: { image: await convertFileToBase64(form.others.blob[0]), size: form.others.size },
+      detector: form.detector,
+      sub_alarm_panel: form.sub_alarm_panel,
+      main_alarm_panel: form.main_alarm_panel,
+      others: form.others
     }, form.incident_no)
     PptxGenerator.savePowerPoint(generatedPptx, 'DECAM.pptx')
   }
 
-  const onImageDrop = (imageFiles, photoCategory) => {
-    const imageFile = imageFiles[0]
-    const src = URL.createObjectURL(imageFile)
-    setimageToCrop({ photoCategory, file: imageFile, src })
-  }
-
-  const onImageCropConfirm = async (category, { croppedImage, size }) => {
-    setFormValue(category, { blob: [croppedImage], size })
-    setimageToCrop({ photoCategory: { id: "", formLabel: "" }, file: "" })
+  const onImageCropConfirm = async (category, { data, size }) => {
+    setFormValue(category, [...getValues(category), { data, size }])
+    console.log(imageToCrop)
+    setImageToCrop({ photoCategory: { id: "", formLabel: "" }, src: "" })
   }
 
   return (
@@ -89,14 +84,16 @@ function App() {
               control={control}
               name={photoCategory.id}
               render={({ onChange, value }) =>
-                <Dropzone
-                  register={register}
-                  setDroppedFiles={onChange}
-                  droppedFiles={value.blob}
-                  onDrop={(files) => onImageDrop(files, photoCategory)}
+                <PhotoUploadList
+                  photoCategoryId={photoCategory.id}
+                  photos={value}
+                  setPhotos={(photo) => setImageToCrop({
+                    photoCategory,
+                    src: photo
+                  })}
                 />
               }
-              defaultValue={{ blob: [] }}
+              defaultValue={[]}
             />
           </Form.Group>
         )
@@ -105,9 +102,9 @@ function App() {
           imageToCrop.photoCategory.id &&
           <Cropper
             title={imageToCrop.photoCategory.formLabel}
-            onConfirm={({ croppedImage, size }) => onImageCropConfirm(imageToCrop.photoCategory.id, { croppedImage, size })}
+            onConfirm={({ data, size }) => onImageCropConfirm(imageToCrop.photoCategory.id, { data, size })}
             imageToCrop={imageToCrop}
-            onClose={() => setimageToCrop({ photoCategory: { id: "", formLabel: "" }, file: "" })}
+            onClose={() => setImageToCrop({ photoCategory: { id: "", formLabel: "" }, file: "" })}
           />
         }
         <Button variant="primary" type="submit">
