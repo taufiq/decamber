@@ -2,8 +2,8 @@ import React from 'react'
 
 function PhotoUploadListItem({ photo, onClose }) {
   return (
-    <div className="flex-column mr-2" style={{width: '40%', height: '100%', flexWrap: 'wrap'}}>
-        <div className="position-relative border flex-column rounded p-1 bg-white">
+    <div className="flex-column mr-2 mb-3" style={{width: '46%', height: '100px'}}>
+        <div className="position-relative border flex-column rounded bg-white">
           <i
             className="fas fa-times-circle position-absolute"
             style={{ right: -16, top: -16, fontSize: '32px'}}

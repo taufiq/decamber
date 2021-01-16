@@ -18,7 +18,8 @@ function PhotoUploadCard({ photoCategoryId, onPhotoUpload }) {
 				onClick={() => {
 					document.getElementById(photoCategoryId).click()
 				}}
-				className="card border dashed w-50"
+				className="card border dashed"
+				style={{ height: '100px', width: '46%' }}
 			>
 				<input
 					id={photoCategoryId}

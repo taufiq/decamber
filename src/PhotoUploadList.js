@@ -4,7 +4,7 @@ import PhotoUploadCard from './PhotoUploadCard'
 
 function PhotoUploadList({ photoCategoryId, photos, onPhotoUpload }) {
     return (
-        <div className="container d-flex" style={{ height: '20vh' }}>
+        <div className="container d-flex justify-content-between flex-wrap" /* style={{ height: '20vh' }} */>
             {
                 photos?.map((photo) => {
                     return <PhotoUploadListItem photo={photo.data}/>
