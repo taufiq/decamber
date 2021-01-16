@@ -26,6 +26,10 @@ function PhotoUploadCard({ photoCategoryId, onPhotoUpload }) {
 					onChange={async (event) => {
 						const selectedPhoto = event.target.files[0]
 						const base64EncodedPhoto = await convertFileToBase64(selectedPhoto)
+						// We reset the value to allow multiple uploads of the same file
+						// If we didn't reset the onChange method wouldn't be called
+						// if the same file was chosen since the value didn't change
+						document.getElementById(photoCategoryId).value = ''
 						onPhotoUpload(base64EncodedPhoto)
 					}}
 					type="file"
