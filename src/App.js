@@ -77,6 +77,10 @@ function App() {
                     photoCategory,
                     src: photo
                   })}
+                  onPhotoRemove={(dataOfPhotoToBeRemoved) => {
+                    const remainingPhotos = value.filter((photo) => photo.data !== dataOfPhotoToBeRemoved)
+                    setFormValue(photoCategory.id, remainingPhotos)
+                  }}
                 />
               }
               defaultValue={[]}
