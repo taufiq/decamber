@@ -18,7 +18,7 @@ function PhotoUploadCard({ photoCategoryId, onPhotoUpload }) {
 				onClick={() => {
 					document.getElementById(photoCategoryId).click()
 				}}
-				className="card border dashed"
+				className="bg-dark shadow card justify-content-center align-items-center flex-column"
 				style={{ height: '100px', width: '46%' }}
 			>
 				<input
@@ -36,11 +36,9 @@ function PhotoUploadCard({ photoCategoryId, onPhotoUpload }) {
 					accept="image/*"
 					hidden
 				/>
-				<div className="card-body">
-					<div className="card-title d-flex justify-content-center">
-							<i className="far fa-image fa-2x"></i>
-					</div>
-					<p className="card-text text-center">Upload Photo</p>
+				<div className="text-center">
+					<i className="far fa-image fa-2x text-light"></i>
+					<p className="card-text text-center text-light" style={{ whiteSpace: 'nowrap' }}>Upload Photo</p>
 				</div>
 			</div>
     )
