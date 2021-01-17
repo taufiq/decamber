@@ -34,24 +34,24 @@ function createPowerPoint() {
 }
 
 function populateWithImages(pptx, categories, incident_no) {
-    for (const category in categories) {
-        const information = categories[category]
-        const isEmpty = _.isEmpty(information.image)
+    const images = _.flatMap(categories)
+    for (const image of images) {
+        const isEmpty = _.isEmpty(image.data)
         if (isEmpty) continue
         let slide = pptx.addSlide("CONTENT_SLIDE")
         slide.addText(incident_no, { placeholder: 'title' })
-        let scaleX = 9 / information.size.width
-        let scaleY = 3.5 / information.size.height
+        let scaleX = 9 / image.size.width
+        let scaleY = 3.5 / image.size.height
         let calculatedWidth, calculatedHeight
         if (scaleY < scaleX) {
-            calculatedWidth = information.size.width * scaleY
+            calculatedWidth = image.size.width * scaleY
             calculatedHeight = 3.5
         } else {
-            calculatedHeight = scaleX * information.size.height
+            calculatedHeight = scaleX * image.size.height
             calculatedWidth = 9
         }
 
-        slide.addImage({ data: information.image, h: calculatedHeight, w: calculatedWidth , y: '23.3%', x: (10-calculatedWidth)/2 })
+        slide.addImage({ data: image.data, h: calculatedHeight, w: calculatedWidth , y: '23.3%', x: (10-calculatedWidth)/2 })
     }
 
 }

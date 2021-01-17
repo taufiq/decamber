@@ -2,3 +2,13 @@
     margin-right : 0 !important;
     margin-left : 0 !important;
 }
+
+.dashed {
+    border-style: dashed !important;
+}
+
+@media only screen and (max-width: 350px) {
+    .card-text {
+        display: none;
+    }
+}

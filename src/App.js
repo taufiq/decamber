@@ -1,5 +1,4 @@
 import { Form, Container, Navbar, Button } from 'react-bootstrap'
-import Dropzone from './Dropzone'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
 import React, { useState } from 'react';
@@ -8,6 +7,7 @@ import { Controller, useForm } from 'react-hook-form'
 import 'react-image-crop/dist/ReactCrop.css';
 import Cropper from './Cropper';
 import * as PptxGenerator from './pptx/Generator';
+import PhotoUploadList from './PhotoUploadList';
 
 const photoCategories = [
   {
@@ -29,43 +29,24 @@ const photoCategories = [
 ]
 
 
-async function convertFileToBase64(file) {
-  if (!file) {
-    return null
-  }
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.readAsDataURL(file)
-    reader.onload = () => resolve(reader.result)
-    reader.onerror = error => resolve(null)
-  })
-}
-
 function App() {
-  const { register, handleSubmit, control, setValue: setFormValue } = useForm()
-  const [imageToCrop, setimageToCrop] = useState({ photoCategory: { id: "", formLabel: "" }, file: "" })
+  const { register, handleSubmit, control, setValue: setFormValue, getValues } = useForm()
+  const [imageToCrop, setImageToCrop] = useState({ photoCategory: { id: "", formLabel: "" }, src: "" })
 
   const onFormSubmit = async (form) => {
     let generatedPptx = PptxGenerator.createPowerPoint()
-    
     await PptxGenerator.populateWithImages(generatedPptx, {
-      detector: { image: await convertFileToBase64(form.detector.blob[0]), size: form.detector.size },
-      sub_alarm_panel: { image: await convertFileToBase64(form.sub_alarm_panel.blob[0]), size: form.sub_alarm_panel.size },
-      main_alarm_panel: { image: await convertFileToBase64(form.main_alarm_panel.blob[0]), size: form.main_alarm_panel.size },
-      others: { image: await convertFileToBase64(form.others.blob[0]), size: form.others.size },
+      detector: form.detector,
+      sub_alarm_panel: form.sub_alarm_panel,
+      main_alarm_panel: form.main_alarm_panel,
+      others: form.others
     }, form.incident_no)
     PptxGenerator.savePowerPoint(generatedPptx, 'DECAM.pptx')
   }
 
-  const onImageDrop = (imageFiles, photoCategory) => {
-    const imageFile = imageFiles[0]
-    const src = URL.createObjectURL(imageFile)
-    setimageToCrop({ photoCategory, file: imageFile, src })
-  }
-
-  const onImageCropConfirm = async (category, { croppedImage, size }) => {
-    setFormValue(category, { blob: [croppedImage], size })
-    setimageToCrop({ photoCategory: { id: "", formLabel: "" }, file: "" })
+  const onImageCropConfirm = async (category, { data, size }) => {
+    setFormValue(category, [...getValues(category), { data, size }])
+    setImageToCrop({ photoCategory: { id: "", formLabel: "" }, src: "" })
   }
 
   return (
@@ -89,14 +70,22 @@ function App() {
               control={control}
               name={photoCategory.id}
               render={({ onChange, value }) =>
-                <Dropzone
-                  register={register}
-                  setDroppedFiles={onChange}
-                  droppedFiles={value.blob}
-                  onDrop={(files) => onImageDrop(files, photoCategory)}
+                <PhotoUploadList
+                  photoCategoryId={photoCategory.id}
+                  photos={value}
+                  onPhotoUpload={(photo) => setImageToCrop({
+                    photoCategory,
+                    src: photo
+                  })}
+                  onPhotoRemove={(dataOfPhotoToBeRemoved) => {
+                    // This won't work if two of the same photos are uploaded
+                    // If one of the two photos were removed, the other one would as well
+                    const remainingPhotos = value.filter((photo) => photo.data !== dataOfPhotoToBeRemoved)
+                    setFormValue(photoCategory.id, remainingPhotos)
+                  }}
                 />
               }
-              defaultValue={{ blob: [] }}
+              defaultValue={[]}
             />
           </Form.Group>
         )
@@ -105,9 +94,9 @@ function App() {
           imageToCrop.photoCategory.id &&
           <Cropper
             title={imageToCrop.photoCategory.formLabel}
-            onConfirm={({ croppedImage, size }) => onImageCropConfirm(imageToCrop.photoCategory.id, { croppedImage, size })}
+            onConfirm={({ data, size }) => onImageCropConfirm(imageToCrop.photoCategory.id, { data, size })}
             imageToCrop={imageToCrop}
-            onClose={() => setimageToCrop({ photoCategory: { id: "", formLabel: "" }, file: "" })}
+            onClose={() => setImageToCrop({ photoCategory: { id: "", formLabel: "" }, file: "" })}
           />
         }
         <Button variant="primary" type="submit">
