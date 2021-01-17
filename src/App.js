@@ -78,6 +78,8 @@ function App() {
                     src: photo
                   })}
                   onPhotoRemove={(dataOfPhotoToBeRemoved) => {
+                    // This won't work if two of the same photos are uploaded
+                    // If one of the two photos were removed, the other one would as well
                     const remainingPhotos = value.filter((photo) => photo.data !== dataOfPhotoToBeRemoved)
                     setFormValue(photoCategory.id, remainingPhotos)
                   }}
