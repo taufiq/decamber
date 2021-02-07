@@ -18,25 +18,27 @@ function Incidents({ incidents, onCreateIncident, onSelectIncident, onDeleteInci
         <Container>
             {
                 incidents.map((incident) => (
-                    <Card onClick={() => onSelectIncident(incident)}>
-                        <Card.Body>
+                    <Card onClick={() => onSelectIncident(incident)} className="mt-3">
+                        <Card.Body className="d-flex justify-content-between">
                             {incident.incident_no}
-                            <i class="fas fa-chevron-right"></i>
-                            <i class="fas fa-trash-alt p-2" onClick={(event) => {
-                                event.stopPropagation()
-                                onDeleteIncident(incident)
-                            }}></i>
+                            <div>
+                                <i class="far fa-edit text-secondary px-2"></i>
+                                <i class="far fa-trash-alt text-danger px-2" onClick={(event) => {
+                                    event.stopPropagation()
+                                    onDeleteIncident(incident)
+                                }}></i>
+                            </div>
                         </Card.Body>
                     </Card>
                 ))
            }
-            <Card onClick={onCreateIncident}>
-                <Card.Body>
+            <Card onClick={onCreateIncident} className="dotted mt-3">
+                <Card.Body className="d-flex justify-content-between">
                     Create Incident
-                    <i class="fas fa-chevron-right"></i>
+                    <i class="fas fa-plus"></i>
                 </Card.Body>
             </Card>
-            <Button onClick={generateSlides}>Generate Powerpoint</Button>
+            <Button onClick={generateSlides} className="mt-3">Generate Powerpoint</Button>
         </Container>
     )
 }
