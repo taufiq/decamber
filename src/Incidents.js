@@ -1,7 +1,7 @@
 import { Card, Container, Button } from 'react-bootstrap'
 import * as PptxGenerator from './pptx/Generator'
 
-function Incidents({ incidents, onCreateIncident, onSelectIncident }) {
+function Incidents({ incidents, onCreateIncident, onSelectIncident, onDeleteIncident }) {
     async function generateSlides() {
       let generatedPptx = PptxGenerator.createPowerPoint()
       for (const incident of incidents) {
@@ -22,6 +22,10 @@ function Incidents({ incidents, onCreateIncident, onSelectIncident }) {
                         <Card.Body>
                             {incident.incident_no}
                             <i class="fas fa-chevron-right"></i>
+                            <i class="fas fa-trash-alt p-2" onClick={(event) => {
+                                event.stopPropagation()
+                                onDeleteIncident(incident)
+                            }}></i>
                         </Card.Body>
                     </Card>
                 ))
