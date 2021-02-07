@@ -33,7 +33,9 @@ const photoCategories = [
 
 
 function CreateIncident({ incident, onSubmit }) {
-    const { register, handleSubmit, control, setValue: setFormValue, getValues } = useForm()
+    const { register, handleSubmit, control, setValue: setFormValue, getValues } = useForm({
+        defaultValues: incident
+    })
     const [imageToCrop, setImageToCrop] = useState({ photoCategory: { id: "", formLabel: "" }, src: "" })
   
     const onFormSubmit = async (form) => {

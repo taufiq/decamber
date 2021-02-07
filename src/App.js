@@ -1,35 +1,11 @@
-import { Form, Container, Navbar, Button } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
 import React, { useState } from 'react';
 import '@fortawesome/fontawesome-free/css/all.css'
-import { Controller, useForm } from 'react-hook-form'
 import 'react-image-crop/dist/ReactCrop.css';
-import Cropper from './Cropper';
-import * as PptxGenerator from './pptx/Generator';
-import PhotoUploadList from './PhotoUploadList';
 import Incidents from './Incidents';
 import CreateIncident from './CreateIncident';
-
-const photoCategories = [
-  {
-    id: 'detector',
-    formLabel: 'Detector'
-  },
-  {
-    id: 'sub_alarm_panel',
-    formLabel: 'Sub Alarm Panel'
-  },
-  {
-    id: 'main_alarm_panel',
-    formLabel: 'Main Alarm Panel'
-  },
-  {
-    id: 'others',
-    formLabel: 'Other Supporting Pictures (Site Area or Layout Plan)'
-  },
-]
-
+import _ from 'lodash'
 
 function App() {
   const [incidents, setIncidents] = useState([])
@@ -37,9 +13,20 @@ function App() {
 
   return (
     !incident ?
-    <Incidents incidents={incidents} onCreateIncident={() => setIncident({})}/>
-    : <CreateIncident onSubmit={(form) => {
-      setIncidents([...incidents, form])
+    <Incidents
+      incidents={incidents}
+      onCreateIncident={() => setIncident({})}
+      onSelectIncident={(incident) => setIncident(incident)}
+    />
+    : <CreateIncident incident={incident} onSubmit={(form) => {
+      const existingIncidentIndex = _.findIndex(incidents, (incident) => form.incident_no === incident.incident_no)
+      if (existingIncidentIndex === -1) {
+        setIncidents([...incidents, form])
+      } else {
+        const newIncidents = incidents
+        newIncidents[existingIncidentIndex] = form
+        setIncidents(newIncidents)
+      }
       setIncident(null)
     }}/>
   )
