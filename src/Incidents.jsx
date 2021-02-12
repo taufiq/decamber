@@ -38,14 +38,6 @@ function IncidentCard({ incident, onSelectIncident, onDeleteIncident }) {
               event.stopPropagation();
               onDeleteIncident();
             }}>Delete</button>
-          {/* <i className="fa fa-edit text-secondary px-2" />
-          <i
-            className="far fa-trash-alt text-danger px-2"
-            onClick={(event) => {
-					  event.stopPropagation();
-					  onDeleteIncident();
-            }}
-          /> */}
         </div>
       </Card.Body>
     </Card>
