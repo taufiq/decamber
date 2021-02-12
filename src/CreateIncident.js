@@ -6,9 +6,7 @@ import '@fortawesome/fontawesome-free/css/all.css'
 import { Controller, useForm } from 'react-hook-form'
 import 'react-image-crop/dist/ReactCrop.css';
 import Cropper from './Cropper';
-import * as PptxGenerator from './pptx/Generator';
 import PhotoUploadList from './PhotoUploadList';
-import Incidents from './Incidents';
 
 
 const photoCategories = [
@@ -32,7 +30,7 @@ const photoCategories = [
   
 
 
-function CreateIncident({ incident, onSubmit }) {
+function CreateIncident({ incident, onSubmit, onCancel }) {
     const { register, handleSubmit, control, setValue: setFormValue, getValues } = useForm({
         defaultValues: incident
     })
@@ -40,14 +38,6 @@ function CreateIncident({ incident, onSubmit }) {
   
     const onFormSubmit = async (form) => {
         onSubmit(form)
-    //   let generatedPptx = PptxGenerator.createPowerPoint()
-    //   await PptxGenerator.populateWithImages(generatedPptx, {
-    //     detector: form.detector,
-    //     sub_alarm_panel: form.sub_alarm_panel,
-    //     main_alarm_panel: form.main_alarm_panel,
-    //     others: form.others
-    //   }, form.incident_no)
-    //   PptxGenerator.savePowerPoint(generatedPptx, 'DECAM.pptx')
     }
   
     const onImageCropConfirm = async (category, { data, size }) => {
@@ -56,11 +46,15 @@ function CreateIncident({ incident, onSubmit }) {
     }
 
     return (
-        <Container>
-            <Navbar bg="light">
-                <Navbar.Brand>DECAM Slide Deck Generator</Navbar.Brand>
+        <>
+        <Form onSubmit={handleSubmit(onFormSubmit)}>
+            <Navbar className="py-3" bg="dark" sticky="top">
+                <Button variant="secondary" onClick={onCancel}>Back</Button>
+                <Button variant="primary" type="submit" className="ml-auto">
+                    Submit
+                </Button>
             </Navbar>
-            <Form onSubmit={handleSubmit(onFormSubmit)}>
+            <Container className="pt-2">
                 <Form.Group>
                 <Form.Label>Incident No.</Form.Label>
                 <Form.Control required ref={register} name="incident_no" placeholder="" readOnly={!!incident.incident_no}/>
@@ -105,11 +99,9 @@ function CreateIncident({ incident, onSubmit }) {
                     onClose={() => setImageToCrop({ photoCategory: { id: "", formLabel: "" }, file: "" })}
                 />
                 }
-                <Button variant="primary" type="submit">
-                Submit
-                </Button>
-            </Form>
-    </Container >
+            </Container>
+        </Form>
+    </>
     )
 }
 
