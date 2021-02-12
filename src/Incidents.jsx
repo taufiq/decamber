@@ -31,9 +31,9 @@ function IncidentCard({ incident, onSelectIncident, onDeleteIncident }) {
           </div>
         </div>
         <div className="d-flex flex-column">
-          <button className="btn-primary rounded px-4">Edit</button>
+          <button className="btn-primary rounded px-4 py-2">Edit</button>
           <button
-            className="btn-danger rounded px-4 mt-2"
+            className="btn-danger rounded px-4 mt-2 py-2"
             onClick={(event) => {
               event.stopPropagation();
               onDeleteIncident();
