@@ -4,13 +4,12 @@ import * as PptxGenerator from './pptx/Generator';
 
 function IncidentCard({ incident, onSelectIncident, onDeleteIncident }) {
   const photos = _.chain(incident)
-                  .omit('incident_no')
-                  .toArray()
-                  .flatten()
-                  .value()
+    .omit('incident_no')
+    .toArray()
+    .flatten()
+    .value()
   return (
     <Card
-      key={incident.incident_no}
       onClick={onSelectIncident}
       className="mt-3 shadow-sm"
     >
@@ -22,12 +21,12 @@ function IncidentCard({ incident, onSelectIncident, onDeleteIncident }) {
           <div className="d-flex flex-wrap">
             {
               _.isEmpty(photos) ?
-              <p className="mb-0" style={{fontStyle: 'italic'}}>No photos uploaded</p>
-              : photos.map((photo) => (
-              <div className="rounded bg-dark mr-3 mt-2" style={{ width: "4rem", height: "4rem" }}>
-                <img src={photo.data} style={{ objectFit: "contain", width: '100%', height:'100%' }}/>
-              </div>
-            ))}
+                <p className="mb-0" style={{ fontStyle: 'italic' }}>No photos uploaded</p>
+                : photos.map((photo) => (
+                  <div className="rounded bg-dark mr-3 mt-2" style={{ width: "4rem", height: "4rem" }}>
+                    <img src={photo.data} style={{ objectFit: "contain", width: '100%', height: '100%' }} />
+                  </div>
+                ))}
           </div>
         </div>
         <div className="d-flex flex-column">
@@ -61,14 +60,15 @@ function Incidents({
   return (
     <Container>
       {
-				incidents.map((incident) => (
-  <IncidentCard
-    incident={incident}
-    onSelectIncident={() => onSelectIncident(incident)}
-    onDeleteIncident={() => onDeleteIncident(incident)}
-  />
-				))
-			}
+        incidents.map((incident) => (
+          <IncidentCard
+            key={incident.incident_no}
+            incident={incident}
+            onSelectIncident={() => onSelectIncident(incident)}
+            onDeleteIncident={() => onDeleteIncident(incident)}
+          />
+        ))
+      }
       <Card onClick={onCreateIncident} className="dotted mt-3 shadow-sm">
         <Card.Body className="d-flex justify-content-between">
           Create Incident

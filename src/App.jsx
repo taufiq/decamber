@@ -1,15 +1,45 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import '@fortawesome/fontawesome-free/css/all.css';
 import 'react-image-crop/dist/ReactCrop.css';
 import Incidents from './Incidents';
 import CreateIncident from './CreateIncident';
+import * as IDBManager from 'idb-keyval'
 
+function useIdbValue(queryFn) {
+  const [error, setError] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [data, setData] = useState([])
+  return {
+    query: async (...args) => {
+      setError(null)
+      setIsLoading(false)
+      try {
+        setIsLoading(true)
+        setData(await queryFn(...args))
+      } catch (settingError) {
+        setError(settingError)
+        throw settingError
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    isLoading,
+    error,
+    data
+  }
+}
 function App() {
-  const [incidents, setIncidents] = useState([]);
   const [incident, setIncident] = useState(null);
+  const { query: set, isLoading, error} = useIdbValue(IDBManager.set)
+  const { query: del, isLoading: isDeleting, error: deleteError} = useIdbValue(IDBManager.del)
+  const { query: values, isLoading: isGetting, error: getError, data: incidents} = useIdbValue(IDBManager.values)
+
+  useEffect(async () => {
+    await values()
+  }, [])
 
   return (
     !incident
@@ -19,11 +49,10 @@ function App() {
           onCreateIncident={() => setIncident({})}
           onSelectIncident={(selectedIncident) => setIncident(selectedIncident)}
           onDeleteIncident={(incidentToDelete) => {
-            const newIncidents = _.filter(
-              incidents,
-              (incident) => incident.incident_no !== incidentToDelete.incident_no,
-            );
-            setIncidents(newIncidents);
+            del(incidentToDelete.incident_no)
+            .then(() => {
+              values()
+            })
           }}
         />
       )
@@ -31,19 +60,13 @@ function App() {
         <CreateIncident
           incident={incident}
           onCancel={() => setIncident(null)}
-          onSubmit={(incidentToAdd) => {
-            const existingIncidentIndex = _.findIndex(
-              incidents, (incident) => incidentToAdd.incident_no === incident.incident_no,
-            );
-            if (existingIncidentIndex === -1) {
-              setIncidents([...incidents, incidentToAdd]);
-            } else {
-              const incidentsCopy = incidents.slice();
-              incidentsCopy[existingIncidentIndex] = incidentToAdd;
-              setIncidents(incidentsCopy);
-            }
-            setIncident(null);
+          onSubmit={async (incidentToAdd) => {
+              set(incidentToAdd.incident_no, incidentToAdd)
+              .then(() => values())
+              .then(() => setIncident(null))
           }}
+          error={error}
+          isSaving={isLoading}
         />
       )
   );
