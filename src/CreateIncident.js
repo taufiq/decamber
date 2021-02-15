@@ -53,9 +53,10 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                 </div>
             }
             <Form onSubmit={handleSubmit(onFormSubmit)}>
-                <Navbar className="py-3" bg="dark" sticky="top">
-                    <Button variant="secondary" onClick={onCancel}>Back</Button>
-                    <Button variant="primary" type="submit" className="ml-auto text-center">
+                <Navbar className="py-3" bg="dark" variant="dark" sticky="top">
+                    <Button variant="secondary" className="mr-auto" onClick={onCancel}>Cancel</Button>
+                    <Navbar.Brand color="light" className="mx-auto">Add Incident</Navbar.Brand>
+                    <Button variant="primary" type="submit" className="ml-auto">
                         {isSaving ?
                         <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                         : "Submit"
