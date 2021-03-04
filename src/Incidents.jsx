@@ -1,4 +1,4 @@
-import { Card, Container, Button } from 'react-bootstrap';
+import { Card, Container, Button, Navbar } from 'react-bootstrap';
 import _ from 'lodash';
 import * as PptxGenerator from './pptx/Generator';
 
@@ -58,25 +58,32 @@ function Incidents({
     PptxGenerator.savePowerPoint(generatedPptx, 'DECAM.pptx');
   }
   return (
-    <Container>
-      {
-        incidents.map((incident) => (
-          <IncidentCard
-            key={incident.incident_no}
-            incident={incident}
-            onSelectIncident={() => onSelectIncident(incident)}
-            onDeleteIncident={() => onDeleteIncident(incident)}
-          />
-        ))
-      }
-      <Card onClick={onCreateIncident} className="dotted mt-3 shadow-sm">
-        <Card.Body className="d-flex justify-content-between">
-          Create Incident
+    <>
+      <div>
+        <Navbar className="py-3" bg="dark" variant="dark" sticky="top">
+          <Navbar.Brand color="light" className="mx-auto">DECAM Slidedeck Generator</Navbar.Brand>
+        </Navbar>
+      </div>
+      <Container>
+        {
+          incidents.map((incident) => (
+            <IncidentCard
+              key={incident.incident_no}
+              incident={incident}
+              onSelectIncident={() => onSelectIncident(incident)}
+              onDeleteIncident={() => onDeleteIncident(incident)}
+            />
+          ))
+        }
+        <Card onClick={onCreateIncident} className="dotted mt-3 shadow-sm">
+          <Card.Body className="d-flex justify-content-between">
+            Create Incident
           <i className="fas fa-plus" />
-        </Card.Body>
-      </Card>
-      <Button onClick={generateSlides} className="mt-3">Generate Powerpoint</Button>
-    </Container>
+          </Card.Body>
+        </Card>
+        <Button onClick={generateSlides} className="mt-3">Generate Powerpoint</Button>
+      </Container>
+    </>
   );
 }
 

@@ -41,7 +41,7 @@ function App() {
     await values()
   }, [])
 
-  return (
+  return (  
     !incident
       ? (
         <Incidents
