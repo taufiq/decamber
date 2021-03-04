@@ -48,8 +48,10 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
     return (
         <>
             { error &&
-                <div className="alert alert-danger" role="alert">
-                    Error saving. Please try again!
+                <div className="d-flex justify-content-center">
+                    <div className="alert alert-danger position-fixed" style={{ zIndex: 99999, bottom: 0 }} role="alert">
+                        Error saving. Please try again!
+                    </div>
                 </div>
             }
             <Form onSubmit={handleSubmit(onFormSubmit)}>
@@ -58,8 +60,8 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                     <Navbar.Brand color="light" className="mx-auto">Add Incident</Navbar.Brand>
                     <Button variant="primary" type="submit" className="ml-auto">
                         {isSaving ?
-                        <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                        : "Submit"
+                            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            : "Submit"
                         }
                     </Button>
                 </Navbar>
