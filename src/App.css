@@ -12,3 +12,9 @@
         display: none;
     }
 }
+
+.incident-card-header {
+    font-weight: 500;
+    color: grey;
+    font-size: small;
+}
