@@ -5,7 +5,7 @@ import ReactCrop from 'react-image-crop'
 const pixelRatio = window.devicePixelRatio || 1;
 
 function Cropper({ title, onConfirm, imageToCrop, onClose }) {
-    const [crop, setCrop] = useState({ unit: '%', width: 100, height: 100 })
+    const [crop, setCrop] = useState({ unit: '%', aspect: 1/1.2, width: 100 })
     const imageRef = useRef({})
 
     async function onSave() {
