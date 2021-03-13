@@ -7,27 +7,8 @@ import { Controller, useForm } from 'react-hook-form'
 import 'react-image-crop/dist/ReactCrop.css';
 import Cropper from './Cropper';
 import PhotoUploadList from './PhotoUploadList';
-
-
-const photoCategories = [
-    {
-        id: 'detector',
-        formLabel: 'Detector'
-    },
-    {
-        id: 'sub_alarm_panel',
-        formLabel: 'Sub Alarm Panel'
-    },
-    {
-        id: 'main_alarm_panel',
-        formLabel: 'Main Alarm Panel'
-    },
-    {
-        id: 'others',
-        formLabel: 'Other Supporting Pictures (Site Area or Layout Plan)'
-    },
-]
-
+import Datetime from 'react-datetime';
+import {photoCategories} from './Constants'
 
 
 function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
