@@ -5,11 +5,12 @@ import Datetime from 'react-datetime';
 import "react-datetime/css/react-datetime.css";
 import { Controller, useForm } from 'react-hook-form'
 import moment from 'moment'
+import {photoCategories} from './Constants'
 
 
 function IncidentCard({ incident, onSelectIncident, onDeleteIncident }) {
   const photos = _.chain(incident)
-    .omit('incident_no')
+    .pick(_.map(photoCategories, (category) => category.id))
     .toArray()
     .flatten()
     .value()
