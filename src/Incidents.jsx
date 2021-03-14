@@ -56,16 +56,27 @@ function Incidents({
       dutyDate: moment()
     }
   })
-  async function generateSlides() {
-    const { station, rota, dutyDate } = getValues()
+  async function generateSlides(form) {
+    const { station, rota, dutyDate, callSign, pumpOperator, sectionCommander } = form
     const generatedPptx = PptxGenerator.createPowerPoint();
     for (const incident of incidents) {
-      await PptxGenerator.populateWithImages(generatedPptx, {
+      PptxGenerator.addInformationSlide(
+        generatedPptx,
+        {
+          ...incident,
+          main_alarm_panel: incident.main_alarm_panel[0],
+          incidentNo: incident.incident_no,
+          callSign,
+          sectionCommander,
+          pumpOperator
+        }
+      )
+      PptxGenerator.addImages(generatedPptx, {
         detector: incident.detector,
         sub_alarm_panel: incident.sub_alarm_panel,
         main_alarm_panel: incident.main_alarm_panel,
         others: incident.others,
-      }, incident.incident_no);
+      }, incident.incident_no)
     }
     PptxGenerator.savePowerPoint(generatedPptx, `S${station}_R${rota}_${dutyDate.format('DDMMYYYY')}`);
   }
@@ -77,9 +88,9 @@ function Incidents({
         </Navbar>
       </div>
       <Container className="mt-3">
-        <Card>
+            <Form onSubmit={handleSubmit(generateSlides)}>
+        <Card className="mt-3">
           <Card.Body>
-            <Form>
               <Form.Row>
                 <Col>
                   <Form.Group>
@@ -105,27 +116,40 @@ function Incidents({
                 </Col>
               </Form.Row>
               <Form.Row>
-                <Form.Group>
-                  <Form.Label>Duty Date</Form.Label>
-                  <Controller
-                    control={control}
-                    name="dutyDate"
-                    render={({ onChange, value }) => (
-                      <Datetime
-                        value={value}
-                        timeFormat=""
-                        onChange={(newDate) => onChange(newDate)}
-                      />
-                    )
-                    }
-                  />
-                </Form.Group>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>Duty Date</Form.Label>
+                    <Controller
+                      control={control}
+                      name="dutyDate"
+                      render={({ onChange, value }) => (
+                        <Datetime
+                          value={value}
+                          timeFormat=""
+                          onChange={(newDate) => onChange(newDate)}
+                        />
+                      )
+                      }
+                    />
+                  </Form.Group>
+                </Col>
+                <Col>
+                  <Form.Group>
+                    <Form.Label>Call Sign</Form.Label>
+                    <Form.Control ref={register} required name="callSign" placeholder="e.g PL411E" />
+                  </Form.Group>
+                </Col>
               </Form.Row>
-            </Form>
+              <Form.Group>
+                <Form.Label>SC</Form.Label>
+                <Form.Control ref={register} required name="sectionCommander" placeholder="e.g SGT(2) Tan A" />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>PO</Form.Label>
+                <Form.Control ref={register} required name="pumpOperator" placeholder="e.g SGT(3) Muhammed B"/>
+              </Form.Group>
           </Card.Body>
         </Card>
-      </Container>
-      <Container>
         {
           incidents.map((incident) => (
             <IncidentCard
@@ -142,7 +166,8 @@ function Incidents({
           <i className="fas fa-plus" />
           </Card.Body>
         </Card>
-        <Button onClick={generateSlides} className="mt-3">Generate Powerpoint</Button>
+        <Button type="submit" className="mt-3">Generate Powerpoint</Button>
+            </Form>
       </Container>
     </>
   );

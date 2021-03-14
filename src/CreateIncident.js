@@ -1,4 +1,4 @@
-import { Form, Container, Navbar, Button } from 'react-bootstrap'
+import { Form, Container, Navbar, Button, Col } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
 import React, { useState } from 'react';
@@ -51,6 +51,66 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                         <Form.Label>Incident No.</Form.Label>
                         <Form.Control required ref={register} name="incident_no" placeholder="" readOnly={!!incident.incident_no} />
                     </Form.Group>
+                    <Form.Row>
+                        <Col>
+                            <Form.Group>
+                                <Form.Label>Time Dispatched</Form.Label>
+                                <Controller
+                                    control={control}
+                                    name="dispatchTime"
+                                    defaultValue={new Date()}
+                                    render={({ onChange, value }) => (
+                                        <Datetime
+                                        value={value}
+                                        dateFormat={false}
+                                        timeFormat="HH:mm:ss"
+                                        onChange={(newDate) => onChange(newDate)}
+                                        />
+                                    )
+                                    }
+                                />
+                            </Form.Group>
+                        </Col>
+                        <Col>
+                            <Form.Group>
+                                <Form.Label>Time Arrived</Form.Label>
+                                <Controller
+                                    control={control}
+                                    name="arrivalTime"
+                                    defaultValue={new Date()}
+                                    render={({ onChange, value }) => (
+                                        <Datetime
+                                        value={value}
+                                        dateFormat={false}
+                                        timeFormat="HH:mm:ss"
+                                        onChange={(newDate) => onChange(newDate)}
+                                        />
+                                    )
+                                    }
+                                />
+                            </Form.Group>
+                        </Col>
+                    </Form.Row>
+                    <Form.Group>
+                        <Form.Label>Incident Location</Form.Label>
+                        <Form.Control required ref={register} name="incidentLocation" placeholder="e.g 123 Teck Street" />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Premise owner</Form.Label>
+                        <Form.Control required ref={register} name="premiseOwner" placeholder="e.g Unity Pte. Ltd." />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Accompanying Person Information</Form.Label>
+                        <Form.Control required ref={register} name="accompanyingPerson" placeholder="e.g Mr Devan, Technician, 92345678" />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Classification & Location</Form.Label>
+                        <Form.Control as="textarea" required ref={register} name="classificationAndLocation" placeholder="e.g False alarm malfunction of detector at lift lobby" />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Case handed over to</Form.Label>
+                        <Form.Control required ref={register} name="personCaseWasTransferredTo" placeholder="e.g SGT T123456 (Boon Lay NPC)" />
+                    </Form.Group>
                     {/* <Form.Group>
                 <Form.Label>Stop Message</Form.Label>
                 <Form.Control ref={register} name="stop_message" as="textarea" rows={4} placeholder="" />
@@ -61,6 +121,7 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                             <Controller
                                 control={control}
                                 name={photoCategory.id}
+                                // rules={{ required: true, validate: (value) => value.length > 0 }}
                                 render={({ onChange, value }) =>
                                     <PhotoUploadList
                                         photoCategoryId={photoCategory.id}
