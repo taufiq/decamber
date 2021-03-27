@@ -93,7 +93,7 @@ function App() {
           onDeleteIncident={(incidentToDelete) => {
             del(incidentToDelete.incident_no)
               .then(() => {
-                values()
+                fetchIncidents()
               })
           }}
           createIncidentCardRef={createIncidentCardRef}
@@ -104,7 +104,7 @@ function App() {
           }}
           onResetApplication={async () => {
             await IDBManager.clear()
-            location.reload()
+            window.location.reload()
           }}
         />
       )
@@ -114,7 +114,7 @@ function App() {
           onCancel={() => setIncident(null)}
           onSubmit={async (incidentToAdd) => {
             set(incidentToAdd.incident_no, incidentToAdd)
-              .then(() => values())
+              .then(() => fetchIncidents())
               .then(() => setIncident(null))
           }}
           error={error}
