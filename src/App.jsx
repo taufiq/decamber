@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import _ from 'lodash';
 import '@fortawesome/fontawesome-free/css/all.css';
 import 'react-image-crop/dist/ReactCrop.css';
@@ -33,6 +33,7 @@ function useIdbValue(queryFn) {
   }
 }
 function App() {
+  const createIncidentCardRef = useRef()
   const [incident, setIncident] = useState(null);
   const { query: set, isLoading, error } = useIdbValue(IDBManager.set)
   const { query: del, isLoading: isDeleting, error: deleteError } = useIdbValue(IDBManager.del)
@@ -81,6 +82,7 @@ function App() {
 
     return serializedBasicInformation
   }
+  
   return (
     !incident
       ? (
@@ -94,6 +96,7 @@ function App() {
                 values()
               })
           }}
+          createIncidentCardRef={createIncidentCardRef}
           basicInformation={basicInformation}
           updateBasicInformation={(newBasicInformation) => {
             const serializedInfo = serializeBasicInformation(newBasicInformation)

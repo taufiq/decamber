@@ -70,9 +70,9 @@ function shallowCompare(objectA, objectB) {
   return true
 }
 function Incidents({
-  incidents, onCreateIncident, onSelectIncident, onDeleteIncident, basicInformation, updateBasicInformation, onResetApplication
+  incidents, onCreateIncident, onSelectIncident, onDeleteIncident, basicInformation, updateBasicInformation, onResetApplication, createIncidentCardRef
 }) {
-  const { register, handleSubmit, getValues, setValue, control, watch, reset } = useForm({
+  const { register, handleSubmit, getValues, setValue, control, watch, reset, trigger } = useForm({
     defaultValues: basicInformation
   })
 
@@ -216,7 +216,19 @@ function Incidents({
               </Form.Group>
               <Form.Group>
                 <Form.Label>PO</Form.Label>
-                <Form.Control ref={register} required name="pumpOperator" placeholder="e.g SGT(3) Muhammed B" />
+                <Form.Control
+                  onKeyDown={async (key) => {
+                    if (key.code === "Enter") {
+                      const areAllInputsValid = await trigger()
+                      if (!areAllInputsValid) return
+                      createIncidentCardRef.current.focus()
+                    }
+                  }}
+                  ref={register}
+                  required
+                  name="pumpOperator"
+                  placeholder="e.g SGT(3) Muhammed B"
+                />
               </Form.Group>
             </Card.Body>
           </Card>
@@ -230,7 +242,7 @@ function Incidents({
               />
             ))
           }
-          <Card onClick={onCreateIncident} className="dotted mt-3 shadow-sm">
+          <Card onClick={onCreateIncident} className="dotted mt-3 shadow-sm" ref={createIncidentCardRef} tabIndex="-1">
             <Card.Body className="d-flex justify-content-between">
               Create Incident
           <i className="fas fa-plus" />
