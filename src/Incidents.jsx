@@ -117,7 +117,7 @@ function Incidents({
       if (hasFormChanged) {
         updateBasicInformation(watchAllInputs)
       }
-    }, 4000)
+    }, 1500)
 
     return async () => {
       console.log('clearing timeout')
