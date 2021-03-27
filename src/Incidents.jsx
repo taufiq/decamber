@@ -4,8 +4,10 @@ import * as PptxGenerator from './pptx/Generator';
 import Datetime from 'react-datetime';
 import "react-datetime/css/react-datetime.css";
 import { Controller, useForm } from 'react-hook-form'
-import moment from 'moment'
-import {photoCategories} from './Constants'
+import moment, { isMoment } from 'moment'
+import { photoCategories } from './Constants'
+import { useEffect, useState } from 'react';
+import * as IDBManager from 'idb-keyval';
 
 
 function IncidentCard({ incident, onSelectIncident, onDeleteIncident }) {
@@ -48,14 +50,82 @@ function IncidentCard({ incident, onSelectIncident, onDeleteIncident }) {
     </Card>
   );
 }
-function Incidents({
-  incidents, onCreateIncident, onSelectIncident, onDeleteIncident,
-}) {
-  const { register, handleSubmit, getValues, setValue, control } = useForm({
-    defaultValues: {
-      dutyDate: moment()
+
+function useDebounce(value) {
+  const [debouncedValue, setDebouncedValue] = useState(value)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedValue(value)
+    }, 1500)
+
+    return () => {
+      clearTimeout(timer)
     }
+  }, [value])
+
+  return debouncedValue
+}
+
+function shallowCompare(objectA, objectB) {
+  if (!_.isEqual(_.keys(objectA), _.keys(objectB))) {
+    return false
+  }
+
+  for (const key in objectA) {
+    if (isMoment(objectA[key])) {
+      if (!objectA[key].isSame(objectB[key])) {
+        return false
+      }
+    }
+    if (objectA[key] !== objectB[key]) {
+      return false
+    }
+  }
+
+  return true
+}
+function Incidents({
+  incidents, onCreateIncident, onSelectIncident, onDeleteIncident, basicInformation, updateBasicInformation
+}) {
+  const { register, handleSubmit, getValues, setValue, control, watch, reset } = useForm({
+    defaultValues: basicInformation
   })
+
+
+  const watchAllInputs = watch()
+
+  useEffect(() => {
+    reset(basicInformation)
+  }, [basicInformation])
+  function serializeBasicInformation(deserializedInfo) {
+    const keyToSerialize = _.findKey(deserializedInfo, (v) => moment.isMoment(v))
+    let serializedBasicInformation = Object.assign({}, deserializedInfo)
+    serializedBasicInformation[keyToSerialize] = serializedBasicInformation[keyToSerialize].valueOf()
+
+    return serializedBasicInformation
+  }
+
+
+  useEffect(() => {
+    const handler = setTimeout(async () => {
+      // console.log('executing')
+      const storedInformation = await IDBManager.get("GENERAL_INFORMATION")
+      console.log(watchAllInputs, 'yuh')
+      const hasFormChanged = !shallowCompare(storedInformation, serializeBasicInformation(watchAllInputs))
+      console.log(hasFormChanged, 'form changed', storedInformation, watchAllInputs)
+      if (hasFormChanged) {
+        updateBasicInformation(watchAllInputs)
+      }
+    }, 4000)
+
+    return async () => {
+      console.log('clearing timeout')
+      clearTimeout(handler)
+    }
+
+  }, [watchAllInputs])
+
   async function generateSlides(form) {
     const { station, rota, dutyDate, callSign, pumpOperator, sectionCommander } = form
     const generatedPptx = PptxGenerator.createPowerPoint();
@@ -88,9 +158,9 @@ function Incidents({
         </Navbar>
       </div>
       <Container className="mt-3">
-            <Form onSubmit={handleSubmit(generateSlides)}>
-        <Card className="mt-3">
-          <Card.Body>
+        <Form onSubmit={handleSubmit(generateSlides)}>
+          <Card className="mt-3">
+            <Card.Body>
               <Form.Row>
                 <Col>
                   <Form.Group>
@@ -146,28 +216,28 @@ function Incidents({
               </Form.Group>
               <Form.Group>
                 <Form.Label>PO</Form.Label>
-                <Form.Control ref={register} required name="pumpOperator" placeholder="e.g SGT(3) Muhammed B"/>
+                <Form.Control ref={register} required name="pumpOperator" placeholder="e.g SGT(3) Muhammed B" />
               </Form.Group>
-          </Card.Body>
-        </Card>
-        {
-          incidents.map((incident) => (
-            <IncidentCard
-              key={incident.incident_no}
-              incident={incident}
-              onSelectIncident={() => onSelectIncident(incident)}
-              onDeleteIncident={() => onDeleteIncident(incident)}
-            />
-          ))
-        }
-        <Card onClick={onCreateIncident} className="dotted mt-3 shadow-sm">
-          <Card.Body className="d-flex justify-content-between">
-            Create Incident
+            </Card.Body>
+          </Card>
+          {
+            incidents.map((incident) => (
+              <IncidentCard
+                key={incident.incident_no}
+                incident={incident}
+                onSelectIncident={() => onSelectIncident(incident)}
+                onDeleteIncident={() => onDeleteIncident(incident)}
+              />
+            ))
+          }
+          <Card onClick={onCreateIncident} className="dotted mt-3 shadow-sm">
+            <Card.Body className="d-flex justify-content-between">
+              Create Incident
           <i className="fas fa-plus" />
-          </Card.Body>
-        </Card>
-        <Button type="submit" className="mt-3">Generate Powerpoint</Button>
-            </Form>
+            </Card.Body>
+          </Card>
+          <Button type="submit" className="mt-3 mb-5">Generate Powerpoint</Button>
+        </Form>
       </Container>
     </>
   );

@@ -7,6 +7,7 @@ import 'react-image-crop/dist/ReactCrop.css';
 import Incidents from './Incidents';
 import CreateIncident from './CreateIncident';
 import * as IDBManager from 'idb-keyval'
+import moment from 'moment'
 
 function useIdbValue(queryFn) {
   const [error, setError] = useState(null)
@@ -33,15 +34,54 @@ function useIdbValue(queryFn) {
 }
 function App() {
   const [incident, setIncident] = useState(null);
-  const { query: set, isLoading, error} = useIdbValue(IDBManager.set)
-  const { query: del, isLoading: isDeleting, error: deleteError} = useIdbValue(IDBManager.del)
-  const { query: values, isLoading: isGetting, error: getError, data: incidents} = useIdbValue(IDBManager.values)
+  const { query: set, isLoading, error } = useIdbValue(IDBManager.set)
+  const { query: del, isLoading: isDeleting, error: deleteError } = useIdbValue(IDBManager.del)
+  const { query: fetchIncidents, isLoading: isGetting, error: getError, data: incidents } = useIdbValue(async () => {
+    const fetchedIncidents = _.chain(await IDBManager.entries())
+                              .filter((entry) => entry[0] !== "GENERAL_INFORMATION")
+                              .map((entry) => entry[1])
+                              .value()
+    return fetchedIncidents
+  })
+
+  const { query: fetchBasicInformation, isLoading: isGettingBasicInformation, data: basicInformation} = useIdbValue(async () => {
+    const fetchedData = await IDBManager.get('GENERAL_INFORMATION')
+    if (fetchedData === undefined) {
+      return {
+        station: "42",
+        rota: "1",
+        callSign: "",
+        sectionCommander: "",
+        pumpOperator: "yuh",
+        dutyDate: moment()
+      }
+    }
+    return deserializeBasicInformation(fetchedData)
+  })
 
   useEffect(async () => {
-    await values()
+    await fetchIncidents()
+    await fetchBasicInformation()
   }, [])
 
-  return (  
+  useEffect(() => {
+    // console.log(basicInformation, 'fetched Data')
+  }, [basicInformation])
+
+  function serializeBasicInformation(deserializedInfo) {
+    const keyToSerialize = _.findKey(deserializedInfo, (v) => moment.isMoment(v))
+    let serializedBasicInformation = Object.assign({}, deserializedInfo)
+    serializedBasicInformation[keyToSerialize] = serializedBasicInformation[keyToSerialize].valueOf()
+
+    return serializedBasicInformation
+  }
+  function deserializeBasicInformation(deserializedInfo) {
+    let serializedBasicInformation = Object.assign({}, deserializedInfo)
+    serializedBasicInformation["dutyDate"] = moment(serializedBasicInformation["dutyDate"])
+
+    return serializedBasicInformation
+  }
+  return (
     !incident
       ? (
         <Incidents
@@ -50,9 +90,14 @@ function App() {
           onSelectIncident={(selectedIncident) => setIncident(selectedIncident)}
           onDeleteIncident={(incidentToDelete) => {
             del(incidentToDelete.incident_no)
-            .then(() => {
-              values()
-            })
+              .then(() => {
+                values()
+              })
+          }}
+          basicInformation={basicInformation}
+          updateBasicInformation={(newBasicInformation) => {
+            const serializedInfo = serializeBasicInformation(newBasicInformation)
+            set("GENERAL_INFORMATION", serializedInfo)
           }}
         />
       )
@@ -61,7 +106,7 @@ function App() {
           incident={incident}
           onCancel={() => setIncident(null)}
           onSubmit={async (incidentToAdd) => {
-              set(incidentToAdd.incident_no, incidentToAdd)
+            set(incidentToAdd.incident_no, incidentToAdd)
               .then(() => values())
               .then(() => setIncident(null))
           }}
