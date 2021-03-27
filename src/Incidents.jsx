@@ -86,7 +86,7 @@ function shallowCompare(objectA, objectB) {
   return true
 }
 function Incidents({
-  incidents, onCreateIncident, onSelectIncident, onDeleteIncident, basicInformation, updateBasicInformation
+  incidents, onCreateIncident, onSelectIncident, onDeleteIncident, basicInformation, updateBasicInformation, onResetApplication
 }) {
   const { register, handleSubmit, getValues, setValue, control, watch, reset } = useForm({
     defaultValues: basicInformation
@@ -236,7 +236,8 @@ function Incidents({
           <i className="fas fa-plus" />
             </Card.Body>
           </Card>
-          <Button type="submit" className="mt-3 mb-5">Generate Powerpoint</Button>
+          <Button type="button" className="mt-3 mb-5 bg-danger" onClick={onResetApplication}>Reset All</Button>
+          <Button type="submit" className="mt-3 mb-5 float-right">Generate Powerpoint</Button>
         </Form>
       </Container>
     </>

@@ -99,6 +99,10 @@ function App() {
             const serializedInfo = serializeBasicInformation(newBasicInformation)
             set("GENERAL_INFORMATION", serializedInfo)
           }}
+          onResetApplication={async () => {
+            await IDBManager.clear()
+            location.reload()
+          }}
         />
       )
       : (
