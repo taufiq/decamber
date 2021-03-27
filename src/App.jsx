@@ -52,7 +52,7 @@ function App() {
         rota: "1",
         callSign: "",
         sectionCommander: "",
-        pumpOperator: "yuh",
+        pumpOperator: "",
         dutyDate: moment()
       }
     }
