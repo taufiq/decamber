@@ -110,7 +110,7 @@ Case handed over to/liaise with: ${personCaseWasTransferredTo}`,
                     w: '20%',
                     h: '40%'
                 }
-            })
+            });
 
         slide.addText([{
             text: 'Main alarm panel',
