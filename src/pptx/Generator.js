@@ -100,28 +100,31 @@ Case handed over to/liaise with: ${personCaseWasTransferredTo}`,
         valign: 'top',
     })
 
-    slide.addImage({
-        data: main_alarm_panel.data,
-        x: '70%',
-        y: '20.63%',
-        sizing: {
-            type: 'contain',
+    if (main_alarm_panel) {
+            slide.addImage({
+                data: main_alarm_panel.data,
+                x: '70%',
+                y: '20.63%',
+                sizing: {
+                    type: 'contain',
+                    w: '20%',
+                    h: '40%'
+                }
+            })
+
+        slide.addText([{
+            text: 'Main alarm panel',
+            options: {
+                fontSize: 14,
+                align: 'center'
+            }
+        }],
+        {
+            x: '70%',
+            y: '61%',
             w: '20%',
-            h: '40%'
-        }
-    })
-    slide.addText([{
-        text: 'Main alarm panel',
-        options: {
-            fontSize: 14,
-            align: 'center'
-        }
-    }],
-    {
-        x: '70%',
-        y: '61%',
-        w: '20%',
-    })
+        })
+    }
 }
 
 function addImages(pptx, categories, incident_no) {
