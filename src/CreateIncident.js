@@ -96,7 +96,7 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                         <Form.Control required ref={register} name="incidentLocation" placeholder="e.g 123 Teck Street" />
                     </Form.Group>
                     <Form.Group>
-                        <Form.Label>Premise owner</Form.Label>
+                        <Form.Label>Premises owner</Form.Label>
                         <Form.Control required ref={register} name="premiseOwner" placeholder="e.g Unity Pte. Ltd." />
                     </Form.Group>
                     <Form.Group>
@@ -110,6 +110,10 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                     <Form.Group>
                         <Form.Label>Case handed over to</Form.Label>
                         <Form.Control required ref={register} name="personCaseWasTransferredTo" placeholder="e.g SGT T123456 (Boon Lay NPC)" />
+                    </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Other remarks</Form.Label>
+                        <Form.Control required ref={register} name="otherRemarks" placeholder="Enter other remarks here" />
                     </Form.Group>
                     {/* <Form.Group>
                 <Form.Label>Stop Message</Form.Label>

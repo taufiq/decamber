@@ -54,7 +54,8 @@ function addInformationSlide(
         premiseOwner,
         accompanyingPerson,
         classificationAndLocation,
-        personCaseWasTransferredTo
+        personCaseWasTransferredTo,
+        otherRemarks
     },
     ) {
     let slide = pptx.addSlide("CONTENT_SLIDE")
@@ -84,7 +85,8 @@ Location of incident: ${incidentLocation}
 Premise owned by: ${premiseOwner}
 Accompanying person, position & contact no.: ${accompanyingPerson}
 Classification & Location: ${classificationAndLocation}
-Case handed over to/liaise with: ${personCaseWasTransferredTo}`,
+Case handed over to/liaise with: ${personCaseWasTransferredTo}
+Other remarks: ${otherRemarks}`,
             options: {
                 fontFace: 'Century Gothic',
                 fontSize: 16,

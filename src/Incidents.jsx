@@ -141,7 +141,7 @@ function Incidents({
           incidentNo: incident.incident_no,
           callSign,
           sectionCommander,
-          pumpOperator
+          pumpOperator,
         }
       )
       PptxGenerator.addImages(generatedPptx, {
