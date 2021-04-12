@@ -9,6 +9,7 @@ import Cropper from './Cropper';
 import PhotoUploadList from './PhotoUploadList';
 import Datetime from 'react-datetime';
 import {photoCategories} from './Constants'
+import moment from 'moment';
 
 
 function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
@@ -58,7 +59,7 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                                 <Controller
                                     control={control}
                                     name="dispatchTime"
-                                    defaultValue={new Date()}
+                                    defaultValue={moment()}
                                     render={({ onChange, value }) => (
                                         <Datetime
                                         value={value}
@@ -77,7 +78,7 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                                 <Controller
                                     control={control}
                                     name="arrivalTime"
-                                    defaultValue={new Date()}
+                                    defaultValue={moment()}
                                     render={({ onChange, value }) => (
                                         <Datetime
                                         value={value}

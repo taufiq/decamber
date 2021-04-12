@@ -76,6 +76,28 @@ function App() {
 
     return serializedBasicInformation
   }
+  function serializeIncident(deserializedInfo) {
+    const keysStoringMomentObject = []
+    for (const key in deserializedInfo) {
+      if (moment.isMoment(deserializedInfo[key])) {
+        keysStoringMomentObject.push(key)
+      }
+    }
+    let serializedBasicInformation = Object.assign({}, deserializedInfo)
+    for (const key of keysStoringMomentObject) {
+      serializedBasicInformation[key] = serializedBasicInformation[key].valueOf()
+    }
+
+    return serializedBasicInformation
+  }
+  function deserializeBasicInformation(deserializedInfo) {
+    let serializedBasicInformation = Object.assign({}, deserializedInfo)
+    serializedBasicInformation["arrivalTime"] = moment(serializedBasicInformation["arrivalTime"])
+    serializedBasicInformation["dispatchTime"] = moment(serializedBasicInformation["dispatchTime"])
+
+    return serializedBasicInformation
+  }
+
   function deserializeBasicInformation(deserializedInfo) {
     let serializedBasicInformation = Object.assign({}, deserializedInfo)
     serializedBasicInformation["dutyDate"] = moment(serializedBasicInformation["dutyDate"])
@@ -113,7 +135,9 @@ function App() {
           incident={incident}
           onCancel={() => setIncident(null)}
           onSubmit={async (incidentToAdd) => {
-            set(incidentToAdd.incident_no, incidentToAdd)
+            const serializedIncident = serializeIncident(incidentToAdd)
+            console.log(serializedIncident)
+            set(incidentToAdd.incident_no, serializedIncident)
               .then(() => fetchIncidents())
               .then(() => setIncident(null))
           }}
