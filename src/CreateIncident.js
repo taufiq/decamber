@@ -35,9 +35,9 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
             }, 1000)
         }
         return () => {
-           if (shouldShowNoPhotoUploadError) {
-               clearTimeout(timer)
-           } 
+            if (shouldShowNoPhotoUploadError) {
+                clearTimeout(timer)
+            }
         }
 
     }, [shouldShowNoPhotoUploadError])
@@ -57,12 +57,12 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                 </div>
             }
             {
-                shouldShowNoPhotoUploadError && 
+                shouldShowNoPhotoUploadError &&
                 <div className="d-flex justify-content-center">
-                <div className="alert alert-danger position-fixed" style={{ zIndex: 99999, bottom: 0 }} role="alert">
-                    Please upload a photo
+                    <div className="alert alert-danger position-fixed" style={{ zIndex: 99999, bottom: 0 }} role="alert">
+                        Please upload a photo
                 </div>
-            </div>
+                </div>
             }
             <Form onSubmit={handleSubmit(onFormSubmit)}>
                 <Navbar className="py-3" bg="dark" variant="dark" sticky="top">
@@ -81,7 +81,7 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                         <Form.Control required ref={register} name="incident_no" placeholder="" readOnly={!!incident.incident_no} />
                     </Form.Group>
                     <Form.Row>
-                    <Col>
+                        <Col>
                             <Form.Group>
                                 <Form.Label>Date Dispatched</Form.Label>
                                 <Controller
@@ -119,26 +119,24 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                                 />
                             </Form.Group>
                         </Col>
-                        <Col>
-                            <Form.Group>
-                                <Form.Label>Time Arrived</Form.Label>
-                                <Controller
-                                    control={control}
-                                    name="arrivalTime"
-                                    defaultValue={moment()}
-                                    render={({ onChange, value }) => (
-                                        <Datetime
-                                            value={value}
-                                            dateFormat={false}
-                                            timeFormat="HH:mm:ss"
-                                            onChange={(newDate) => onChange(newDate)}
-                                        />
-                                    )
-                                    }
-                                />
-                            </Form.Group>
-                        </Col>
                     </Form.Row>
+                    <Form.Group>
+                        <Form.Label>Time Arrived</Form.Label>
+                        <Controller
+                            control={control}
+                            name="arrivalTime"
+                            defaultValue={moment()}
+                            render={({ onChange, value }) => (
+                                <Datetime
+                                    value={value}
+                                    dateFormat={false}
+                                    timeFormat="HH:mm:ss"
+                                    onChange={(newDate) => onChange(newDate)}
+                                />
+                            )
+                            }
+                        />
+                    </Form.Group>
                     <Form.Group>
                         <Form.Label>Incident Location</Form.Label>
                         <Form.Control required ref={register} name="incidentLocation" placeholder="e.g 123 Teck Street" />
@@ -152,7 +150,7 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                         </Col>
                         <Col>
                             <Form.Group>
-                                <Form.Label>Premises' UEN Number</Form.Label>
+                                <Form.Label>Premises' UEN</Form.Label>
                                 <Form.Control required ref={register} name="uenNumber" placeholder="e.g T09LL0001B" />
                             </Form.Group>
                         </Col>
@@ -208,7 +206,7 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                     {
                         imageToCrop.photoCategory.id &&
                         <Cropper
-                            title={imageToCrop.photoCategory.formLabel}
+                            title={`Crop ${imageToCrop.photoCategory.formLabel}`}
                             onConfirm={({ data, size }) => onImageCropConfirm(imageToCrop.photoCategory.id, { data, size })}
                             imageToCrop={imageToCrop}
                             onClose={() => setImageToCrop({ photoCategory: { id: "", formLabel: "" }, file: "" })}
