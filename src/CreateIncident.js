@@ -21,8 +21,7 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
 
     const onFormSubmit = async (form) => {
         const photoCategoryIds = photoCategories.map(category => category.id);
-        if (_.some(getValues(photoCategoryIds), (photoCategoryValue) => _.isEmpty(photoCategoryValue)) )
-        {
+        if (_.every(getValues(photoCategoryIds), (photoCategoryValue) => _.isEmpty(photoCategoryValue))) {
             setShouldShowNoPhotoUploadError(true)
             return
         };
