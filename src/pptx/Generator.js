@@ -40,6 +40,89 @@ function createPowerPoint() {
     return pptx
 }
 
+function addInformationSlideAsTable(pptx, {
+    callSign='PL422E',
+    pumpOperator='SGT(3) Syed',
+    sectionCommander='SGT(2) Yasif',
+    main_alarm_panel,
+    dispatchDate,
+    dispatchTime,
+    arrivalTime,
+    incidentNo,
+    incidentLocation,
+    premiseOwner,
+    accompanyingPerson,
+    classificationAndLocation,
+    personCaseWasTransferredTo,
+    uenNumber,
+    otherRemarks
+},
+) {
+    let slide = pptx.addSlide("CONTENT_SLIDE")
+    slide.addText("INFORMATION", { placeholder: 'title', bold: true })
+    let rows = [
+        [
+            { text: "Appliance", options: {} },
+            { text: callSign, options: { colspan: 2 } },
+        ],
+        [
+            { text: "Rank / Name of Inspecting Officer", options: {} },
+            { text: pumpOperator, options: { colspan: 2 } },
+        ],
+        [
+            { text: "Rank / Name of Inspecting Officer", options: {} },
+            { text: sectionCommander, options: { colspan: 2 } },
+        ],
+        [
+            { text: "Date Dispatched", options: {} },
+            { text: moment(dispatchDate).format("DD/MM/YYYY"), options: { colspan: 2 } },
+        ],
+        [
+            { text: "Time Dispatched", options: {} },
+            { text: moment(dispatchTime).format("HH:MM"), options: { colspan: 2 } },
+        ],
+        [
+            { text: "Time Arrived", options: {} },
+            { text: moment(arrivalTime).format("HH:MM"), options: { colspan: 2 } },
+        ],
+        [
+            { text: "Case ID", options: {} },
+            { text: incidentNo, options: { colspan: 2 } },
+        ],
+        [
+            { text: "Address", options: { rowspan: 1} },
+            { text: incidentLocation, options: { colspan: 2 } },
+        ],
+        // [
+        //     { text: "a", options: {} },
+        //     { text: "PL421", options: { colspan: 2 } },
+        // ],
+        [
+            { text: "Premises Own By", options: {} },
+            { text: premiseOwner, options: { colspan: 1 } },
+            { text: uenNumber, options: { colspan: 1 } },
+        ],
+        [
+            { text: "Details Accompanying Person", options: {} },
+            { text: accompanyingPerson, options: { colspan: 2 } },
+        ],
+        [
+            { text: "Classification", options: {} },
+            { text: classificationAndLocation, options: { colspan: 2 } },
+        ],
+        [
+            { text: "Case handed over to/liasion with", options: {} },
+            { text: personCaseWasTransferredTo, options: { colspan: 2 } },
+        ]
+    ];
+    slide.addTable(rows, {
+        x: '5%',
+        y: '20.63%',
+        h: '49.76%',
+        w: '90%',
+        border:{pt:'1', color:'#000000'}
+    });
+}
 function addInformationSlide(
     pptx,
     {
@@ -197,5 +280,6 @@ export {
     savePowerPoint,
     populateWithImages,
     addImages,
-    addInformationSlide
+    addInformationSlide,
+    addInformationSlideAsTable
 }

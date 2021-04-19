@@ -80,12 +80,12 @@ const temp1 = {
 }
 
 const temp2 = {
-    "station": "42",
-    "rota": "1",
-    "callSign": "",
-    "sectionCommander": "sadasdasdadman",
-    "pumpOperator": "yuhjskalamsn",
-    "dutyDate": "2021-03-27T22:37:01.948Z"
+  "station": "42",
+  "rota": "1",
+  "callSign": "",
+  "sectionCommander": "sadasdasdadman",
+  "pumpOperator": "yuhjskalamsn",
+  "dutyDate": "2021-03-27T22:37:01.948Z"
 }
 
 function Incidents({
@@ -144,6 +144,14 @@ function Incidents({
           pumpOperator,
         }
       )
+      PptxGenerator.addInformationSlideAsTable(generatedPptx, {
+        ...incident,
+        main_alarm_panel: incident.main_alarm_panel[0],
+        incidentNo: incident.incident_no,
+        callSign,
+        sectionCommander,
+        pumpOperator,
+      })
       PptxGenerator.addImages(generatedPptx, {
         detector: incident.detector,
         sub_alarm_panel: incident.sub_alarm_panel,

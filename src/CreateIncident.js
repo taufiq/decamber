@@ -8,7 +8,7 @@ import 'react-image-crop/dist/ReactCrop.css';
 import Cropper from './Cropper';
 import PhotoUploadList from './PhotoUploadList';
 import Datetime from 'react-datetime';
-import {photoCategories} from './Constants'
+import { photoCategories } from './Constants'
 import moment from 'moment';
 
 
@@ -53,6 +53,25 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                         <Form.Control required ref={register} name="incident_no" placeholder="" readOnly={!!incident.incident_no} />
                     </Form.Group>
                     <Form.Row>
+                    <Col>
+                            <Form.Group>
+                                <Form.Label>Date Dispatched</Form.Label>
+                                <Controller
+                                    control={control}
+                                    name="dispatchDate"
+                                    defaultValue={moment()}
+                                    render={({ onChange, value }) => (
+                                        <Datetime
+                                            value={value}
+                                            dateFormat="DD/MM/YYYY"
+                                            timeFormat={false}
+                                            onChange={(newDate) => onChange(newDate)}
+                                        />
+                                    )
+                                    }
+                                />
+                            </Form.Group>
+                        </Col>
                         <Col>
                             <Form.Group>
                                 <Form.Label>Time Dispatched</Form.Label>
@@ -62,10 +81,10 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                                     defaultValue={moment()}
                                     render={({ onChange, value }) => (
                                         <Datetime
-                                        value={value}
-                                        dateFormat={false}
-                                        timeFormat="HH:mm:ss"
-                                        onChange={(newDate) => onChange(newDate)}
+                                            value={value}
+                                            dateFormat={false}
+                                            timeFormat="HH:mm:ss"
+                                            onChange={(newDate) => onChange(newDate)}
                                         />
                                     )
                                     }
@@ -81,10 +100,10 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                                     defaultValue={moment()}
                                     render={({ onChange, value }) => (
                                         <Datetime
-                                        value={value}
-                                        dateFormat={false}
-                                        timeFormat="HH:mm:ss"
-                                        onChange={(newDate) => onChange(newDate)}
+                                            value={value}
+                                            dateFormat={false}
+                                            timeFormat="HH:mm:ss"
+                                            onChange={(newDate) => onChange(newDate)}
                                         />
                                     )
                                     }
@@ -96,10 +115,20 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                         <Form.Label>Incident Location</Form.Label>
                         <Form.Control required ref={register} name="incidentLocation" placeholder="e.g 123 Teck Street" />
                     </Form.Group>
-                    <Form.Group>
-                        <Form.Label>Premises owner</Form.Label>
-                        <Form.Control required ref={register} name="premiseOwner" placeholder="e.g Unity Pte. Ltd." />
-                    </Form.Group>
+                    <Form.Row>
+                        <Col>
+                            <Form.Group>
+                                <Form.Label>Premises owner</Form.Label>
+                                <Form.Control required ref={register} name="premiseOwner" placeholder="e.g Unity Pte. Ltd." />
+                            </Form.Group>
+                        </Col>
+                        <Col>
+                            <Form.Group>
+                                <Form.Label>Premises' UEN Number</Form.Label>
+                                <Form.Control required ref={register} name="uenNumber" placeholder="e.g T09LL0001B" />
+                            </Form.Group>
+                        </Col>
+                    </Form.Row>
                     <Form.Group>
                         <Form.Label>Accompanying Person Information</Form.Label>
                         <Form.Control required ref={register} name="accompanyingPerson" placeholder="e.g Mr Devan, Technician, 92345678" />
