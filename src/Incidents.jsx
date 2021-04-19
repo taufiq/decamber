@@ -133,17 +133,6 @@ function Incidents({
     const { station, rota, dutyDate, callSign, pumpOperator, sectionCommander } = form
     const generatedPptx = PptxGenerator.createPowerPoint();
     for (const incident of incidents) {
-      PptxGenerator.addInformationSlide(
-        generatedPptx,
-        {
-          ...incident,
-          main_alarm_panel: incident.main_alarm_panel[0],
-          incidentNo: incident.incident_no,
-          callSign,
-          sectionCommander,
-          pumpOperator,
-        }
-      )
       PptxGenerator.addInformationSlideAsTable(generatedPptx, {
         ...incident,
         main_alarm_panel: incident.main_alarm_panel[0],
