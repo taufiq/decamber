@@ -1,7 +1,7 @@
 import { Form, Container, Navbar, Button, Col } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '@fortawesome/fontawesome-free/css/all.css'
 import { Controller, useForm } from 'react-hook-form'
 import 'react-image-crop/dist/ReactCrop.css';
@@ -13,14 +13,35 @@ import moment from 'moment';
 
 
 function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
-    const { register, handleSubmit, control, setValue: setFormValue, getValues } = useForm({
+    const { register, handleSubmit, control, setValue: setFormValue, getValues, setError } = useForm({
         defaultValues: incident
     })
     const [imageToCrop, setImageToCrop] = useState({ photoCategory: { id: "", formLabel: "" }, src: "" })
+    const [shouldShowNoPhotoUploadError, setShouldShowNoPhotoUploadError] = useState(false)
 
     const onFormSubmit = async (form) => {
+        const photoCategoryIds = photoCategories.map(category => category.id);
+        if (_.some(getValues(photoCategoryIds), (photoCategoryValue) => _.isEmpty(photoCategoryValue)) )
+        {
+            setShouldShowNoPhotoUploadError(true)
+            return
+        };
         onSubmit(form)
     }
+    useEffect(() => {
+        let timer
+        if (shouldShowNoPhotoUploadError) {
+            timer = setTimeout(() => {
+                setShouldShowNoPhotoUploadError(false)
+            }, 1000)
+        }
+        return () => {
+           if (shouldShowNoPhotoUploadError) {
+               clearTimeout(timer)
+           } 
+        }
+
+    }, [shouldShowNoPhotoUploadError])
 
     const onImageCropConfirm = async (category, { data, size }) => {
         setFormValue(category, [...getValues(category), { data, size }])
@@ -35,6 +56,14 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                         Error saving. Please try again!
                     </div>
                 </div>
+            }
+            {
+                shouldShowNoPhotoUploadError && 
+                <div className="d-flex justify-content-center">
+                <div className="alert alert-danger position-fixed" style={{ zIndex: 99999, bottom: 0 }} role="alert">
+                    Please upload a photo
+                </div>
+            </div>
             }
             <Form onSubmit={handleSubmit(onFormSubmit)}>
                 <Navbar className="py-3" bg="dark" variant="dark" sticky="top">
