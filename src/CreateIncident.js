@@ -169,7 +169,7 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Other remarks</Form.Label>
-                        <Form.Control required ref={register} name="otherRemarks" placeholder="Enter other remarks here" />
+                        <Form.Control as="textarea" required ref={register} name="otherRemarks" placeholder="Enter other remarks here" />
                     </Form.Group>
                     {/* <Form.Group>
                 <Form.Label>Stop Message</Form.Label>

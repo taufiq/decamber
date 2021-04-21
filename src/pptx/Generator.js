@@ -212,7 +212,7 @@ Other remarks: ${otherRemarks}`,
     }
 }
 
-function addImages(pptx, categories, incident_no) {
+function addImages(pptx, categories, incident_no, otherRemarks) {
     let currImageIndex = 0
     let slide
     for (const [category, categoryImages] of Object.entries(categories)) {
@@ -243,6 +243,19 @@ function addImages(pptx, categories, incident_no) {
                 w: '25%',
                 h: '4.47%'
             })
+            if (currImageIndex === 0) {
+                slide.addText([{
+                    text: `Other remarks:\n${otherRemarks}`,
+                    options: {
+                        fontSize: 12
+                    }
+                }], {
+                    x: `5%`,
+                    y: '61.2%',
+                    w: '90%',
+                    h: '10%'
+                })
+            }
             currImageIndex += 1
         }
     }

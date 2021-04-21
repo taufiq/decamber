@@ -146,7 +146,7 @@ function Incidents({
         sub_alarm_panel: incident.sub_alarm_panel,
         main_alarm_panel: incident.main_alarm_panel,
         others: incident.others,
-      }, incident.incident_no)
+      }, incident.incident_no, incident.otherRemarks)
     }
     PptxGenerator.savePowerPoint(generatedPptx, `S${station}_R${rota}_${dutyDate.format('DDMMYYYY')}`);
   }
