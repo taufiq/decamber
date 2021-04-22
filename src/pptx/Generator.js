@@ -59,7 +59,7 @@ function addInformationSlideAsTable(pptx, {
 },
 ) {
     let slide = pptx.addSlide("CONTENT_SLIDE")
-    slide.addText("INFORMATION", { placeholder: 'title', bold: true })
+    slide.addText("Information", { placeholder: 'title', bold: true })
     let rows = [
         [
             { text: "Appliance", options: {} },
