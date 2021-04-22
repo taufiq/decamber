@@ -10,6 +10,7 @@ import PhotoUploadList from './PhotoUploadList';
 import Datetime from 'react-datetime';
 import { photoCategories } from './Constants'
 import moment from 'moment';
+import _ from 'lodash';
 
 
 function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
