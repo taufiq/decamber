@@ -123,7 +123,7 @@ function Incidents({
       if (hasFormChanged) {
         updateBasicInformation(watchAllInputs)
       }
-    }, 1500)
+    }, 500)
 
     return async () => {
       clearTimeout(handler)
@@ -267,7 +267,7 @@ function Incidents({
           <i className="fas fa-plus align-self-center" />
             </Card.Body>
           </Card>
-          <Button type="button" className="mt-3 mb-5 bg-danger" onClick={onResetApplication} disabled={_.isEmpty(incidents)}>Reset All</Button>
+          <Button type="button" className="mt-3 mb-5 bg-danger" onClick={onResetApplication}>Reset All</Button>
           <Button type="submit" className="mt-3 mb-5 float-right" disabled={_.isEmpty(incidents)}>Generate Powerpoint</Button>
         </Form>
       </Container>
