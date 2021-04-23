@@ -8,6 +8,7 @@ import Incidents from './Incidents';
 import CreateIncident from './CreateIncident';
 import * as IDBManager from 'idb-keyval'
 import moment from 'moment'
+import { v4 as uuidv4 } from 'uuid'
 
 function useIdbValue(queryFn) {
   const [error, setError] = useState(null)
@@ -40,7 +41,7 @@ function App() {
   const { query: fetchIncidents, isLoading: isGetting, error: getError, data: incidents } = useIdbValue(async () => {
     const fetchedIncidents = _.chain(await IDBManager.entries())
                               .filter((entry) => entry[0] !== "GENERAL_INFORMATION")
-                              .map((entry) => entry[1])
+                              .map((entry) => ({id: entry[0], ...entry[1]}))
                               .value()
     return fetchedIncidents
   })
@@ -109,7 +110,7 @@ function App() {
           onCreateIncident={() => setIncident({})}
           onSelectIncident={(selectedIncident) => setIncident(selectedIncident)}
           onDeleteIncident={(incidentToDelete) => {
-            del(incidentToDelete.incident_no)
+            del(incidentToDelete.id)
               .then(() => {
                 fetchIncidents()
               })
@@ -132,7 +133,8 @@ function App() {
           onCancel={() => setIncident(null)}
           onSubmit={async (incidentToAdd) => {
             const serializedIncident = serializeIncident(incidentToAdd)
-            set(incidentToAdd.incident_no, serializedIncident)
+            const idOfIncident = serializedIncident.id || uuidv4()
+            set(idOfIncident, serializedIncident)
               .then(() => fetchIncidents())
               .then(() => setIncident(null))
           }}

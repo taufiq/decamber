@@ -31,7 +31,7 @@ function IncidentCard({ incident, onSelectIncident, onDeleteIncident }) {
               _.isEmpty(photos) ?
                 <p className="mb-0" style={{ fontStyle: 'italic' }}>No photos uploaded</p>
                 : photos.map((photo) => (
-                  <div className="rounded bg-dark mr-3 mt-2" style={{ width: "4rem", height: "4rem" }}>
+                  <div key={photo.data} className="rounded bg-dark mr-3 mt-2" style={{ width: "4rem", height: "4rem" }}>
                     <img src={photo.data} style={{ objectFit: "contain", width: '100%', height: '100%' }} />
                   </div>
                 ))}
@@ -254,7 +254,7 @@ function Incidents({
           {
             incidents.map((incident) => (
               <IncidentCard
-                key={incident.incident_no}
+                key={incident.id}
                 incident={incident}
                 onSelectIncident={() => onSelectIncident(incident)}
                 onDeleteIncident={() => onDeleteIncident(incident)}

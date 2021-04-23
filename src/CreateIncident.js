@@ -26,7 +26,9 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
             setShouldShowNoPhotoUploadError(true)
             return
         };
-        onSubmit(form)
+        const formToSubmit = Object.assign({}, form)
+        if (incident.id) formToSubmit.id = incident.id
+        onSubmit(formToSubmit)
     }
     useEffect(() => {
         let timer
@@ -79,7 +81,7 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                 <Container className="pt-2">
                     <Form.Group>
                         <Form.Label>Incident No.</Form.Label>
-                        <Form.Control required ref={register} name="incident_no" placeholder="" readOnly={!!incident.incident_no} />
+                        <Form.Control required ref={register} name="incident_no" placeholder="" />
                     </Form.Group>
                     <Form.Row>
                         <Col>
