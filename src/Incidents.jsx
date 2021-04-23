@@ -38,9 +38,10 @@ function IncidentCard({ incident, onSelectIncident, onDeleteIncident }) {
           </div>
         </div>
         <div className="d-flex flex-column">
-          <button className="btn-primary rounded px-4 py-2">Edit</button>
+          <button type="button" className="btn-primary rounded px-4 py-2">Edit</button>
           <button
             className="btn-danger rounded px-4 mt-2 py-2"
+            type="button"
             onClick={(event) => {
               event.stopPropagation();
               onDeleteIncident();
@@ -109,21 +110,22 @@ function Incidents({
     return serializedBasicInformation
   }
 
+  useEffect(() => {
+    if (_.isEmpty(incidents)) {
+      createIncidentCardRef.current?.focus()
+    }
+  }, [incidents])
 
   useEffect(() => {
     const handler = setTimeout(async () => {
-      // console.log('executing')
       const storedInformation = await IDBManager.get("GENERAL_INFORMATION")
-      console.log(watchAllInputs, 'yuh')
       const hasFormChanged = !shallowCompare(storedInformation, serializeBasicInformation(watchAllInputs))
       if (hasFormChanged) {
-        console.log(hasFormChanged, 'form changed', storedInformation, watchAllInputs)
         updateBasicInformation(watchAllInputs)
       }
     }, 1500)
 
     return async () => {
-      console.log('clearing timeout')
       clearTimeout(handler)
     }
 
@@ -160,6 +162,7 @@ function Incidents({
       <Container className="mt-3">
         <Form onSubmit={handleSubmit(generateSlides)}>
           <Card className="mt-3">
+            <Card.Header>General Information</Card.Header>
             <Card.Body>
               <Form.Row>
                 <Col>
@@ -258,14 +261,14 @@ function Incidents({
               />
             ))
           }
-          <Card onClick={onCreateIncident} className="dotted mt-3 shadow-sm" ref={createIncidentCardRef} tabIndex="-1">
+          <Card onClick={onCreateIncident} className="dotted mt-3 shadow-sm border border-secondary" ref={createIncidentCardRef} tabIndex="-1">
             <Card.Body className="d-flex justify-content-between">
-              Create Incident
-          <i className="fas fa-plus" />
+              <p className="m-0">Add Incident</p>
+          <i className="fas fa-plus align-self-center" />
             </Card.Body>
           </Card>
-          <Button type="button" className="mt-3 mb-5 bg-danger" onClick={onResetApplication}>Reset All</Button>
-          <Button type="submit" className="mt-3 mb-5 float-right">Generate Powerpoint</Button>
+          <Button type="button" className="mt-3 mb-5 bg-danger" onClick={onResetApplication} disabled={_.isEmpty(incidents)}>Reset All</Button>
+          <Button type="submit" className="mt-3 mb-5 float-right" disabled={_.isEmpty(incidents)}>Generate Powerpoint</Button>
         </Form>
       </Container>
     </>

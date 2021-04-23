@@ -65,10 +65,6 @@ function App() {
     await fetchBasicInformation()
   }, [])
 
-  useEffect(() => {
-    // console.log(basicInformation, 'fetched Data')
-  }, [basicInformation])
-
   function serializeBasicInformation(deserializedInfo) {
     const keyToSerialize = _.findKey(deserializedInfo, (v) => moment.isMoment(v))
     let serializedBasicInformation = Object.assign({}, deserializedInfo)
@@ -136,7 +132,6 @@ function App() {
           onCancel={() => setIncident(null)}
           onSubmit={async (incidentToAdd) => {
             const serializedIncident = serializeIncident(incidentToAdd)
-            console.log(serializedIncident)
             set(incidentToAdd.incident_no, serializedIncident)
               .then(() => fetchIncidents())
               .then(() => setIncident(null))
