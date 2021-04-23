@@ -261,7 +261,7 @@ function Incidents({
               />
             ))
           }
-          <Card onClick={onCreateIncident} className="dotted mt-3 shadow-sm border border-secondary" ref={createIncidentCardRef} tabIndex="-1">
+          <Card onClick={onCreateIncident} className="dotted mt-3 shadow-sm border border-secondary" ref={createIncidentCardRef} tabIndex="-1" style={{ cursor: 'pointer' }}>
             <Card.Body className="d-flex justify-content-between">
               <p className="m-0">Add Incident</p>
           <i className="fas fa-plus align-self-center" />
