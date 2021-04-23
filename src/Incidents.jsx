@@ -71,24 +71,6 @@ function shallowCompare(objectA, objectB) {
   return true
 }
 
-const temp1 = {
-  "station": "42",
-  "rota": "1",
-  "callSign": "",
-  "sectionCommander": "sadasdasdad",
-  "pumpOperator": "yuhjskalamsn",
-  "dutyDate": 1616884621948
-}
-
-const temp2 = {
-  "station": "42",
-  "rota": "1",
-  "callSign": "",
-  "sectionCommander": "sadasdasdadman",
-  "pumpOperator": "yuhjskalamsn",
-  "dutyDate": "2021-03-27T22:37:01.948Z"
-}
-
 function Incidents({
   incidents, onCreateIncident, onSelectIncident, onDeleteIncident, basicInformation, updateBasicInformation, onResetApplication, createIncidentCardRef
 }) {
