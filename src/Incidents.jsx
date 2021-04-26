@@ -137,8 +137,8 @@ function Incidents({
   return (
     <>
       <div>
-        <Navbar className="py-3" bg="dark" variant="dark" sticky="top">
-          <Navbar.Brand color="light" className="mx-auto">DECAM Slidedeck Generator</Navbar.Brand>
+        <Navbar className="py-3 justify-content-between" bg="dark" variant="dark">
+          <Navbar.Brand className="">DECAM Slidedeck Generator</Navbar.Brand>
         </Navbar>
       </div>
       <Container className="mt-3">
@@ -249,9 +249,13 @@ function Incidents({
           <i className="fas fa-plus align-self-center" />
             </Card.Body>
           </Card>
-          <Button type="button" className="mt-3 mb-5 bg-danger" onClick={onResetApplication}>Reset All</Button>
-          <Button type="submit" className="mt-3 mb-5 float-right" disabled={_.isEmpty(incidents)}>Generate Powerpoint</Button>
+          <Button type="button" className="mt-4 mb-3 bg-secondary" onClick={onResetApplication}>Reset All</Button>
+          <Button type="button" className="mt-4 mb-3 float-right" disabled={_.isEmpty(incidents)}>Generate Powerpoint</Button>
         </Form>
+        <div class="dropdown-divider"></div>
+        <footer class="my-3 text-muted text-center text-small">
+          <p class="mb-1">Facing problems? Report it <a href="https://go.gov.sg/decamerror">here</a></p>
+        </footer>
       </Container>
     </>
   );

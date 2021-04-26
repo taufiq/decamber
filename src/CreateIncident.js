@@ -78,7 +78,7 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                         }
                     </Button>
                 </Navbar>
-                <Container className="pt-2">
+                <Container className="pt-2 pb-1">
                     <Form.Group>
                         <Form.Label>Incident No.</Form.Label>
                         <Form.Control required ref={register} name="incident_no" placeholder="" />
@@ -216,6 +216,10 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                         />
                     }
                 </Container>
+                <div class="dropdown-divider mx-4"></div>
+                <footer class="my-3 text-muted text-center text-small">
+                    <p class="mb-1">Facing problems? Report it <a href="https://go.gov.sg/decamerror">here</a></p>
+                </footer>
             </Form>
         </>
     )
