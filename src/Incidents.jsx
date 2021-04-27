@@ -246,11 +246,11 @@ function Incidents({
           <Card onClick={onCreateIncident} className="dotted mt-3 shadow-sm border border-secondary" ref={createIncidentCardRef} tabIndex="-1" style={{ cursor: 'pointer' }}>
             <Card.Body className="d-flex justify-content-between">
               <p className="m-0">Add Incident</p>
-          <i className="fas fa-plus align-self-center" />
+              <i className="fas fa-plus align-self-center" />
             </Card.Body>
           </Card>
           <Button type="button" className="mt-4 mb-3 bg-secondary" onClick={onResetApplication}>Reset All</Button>
-          <Button type="button" className="mt-4 mb-3 float-right" disabled={_.isEmpty(incidents)}>Generate Powerpoint</Button>
+          <Button type="submit" className="mt-4 mb-3 float-right" disabled={_.isEmpty(incidents)}>Generate Powerpoint</Button>
         </Form>
         <div class="dropdown-divider"></div>
         <footer class="my-3 text-muted text-center text-small">
