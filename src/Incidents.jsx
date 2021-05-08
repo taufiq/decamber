@@ -8,9 +8,10 @@ import moment, { isMoment } from 'moment'
 import { photoCategories } from './Constants'
 import { useEffect, useState } from 'react';
 import * as IDBManager from 'idb-keyval';
+import Joi from 'joi';
 
 
-function IncidentCard({ incident, onSelectIncident, onDeleteIncident }) {
+function IncidentCard({ incident, onSelectIncident, onDeleteIncident, errors }) {
   const photos = _.chain(incident)
     .pick(_.map(photoCategories, (category) => category.id))
     .toArray()
@@ -21,10 +22,14 @@ function IncidentCard({ incident, onSelectIncident, onDeleteIncident }) {
       onClick={onSelectIncident}
       className="mt-3 shadow-sm"
     >
-      <Card.Body className="d-flex justify-content-between align-items-center">
-        <div>
+      <Card.Body className="d-flex flex-column">
+        <div className="d-flex justify-content-between align-items-center">
+          <div>
           <p className="incident-card-header m-0">Incident No.</p>
-          {incident.incident_no}
+          {_.isEmpty(incident.incident_no) ? 
+            <p className="mb-0" style={{ fontStyle: 'italic' }}>Incident no. not filled in</p>
+            : incident.incident_no
+        }
           <p className="incident-card-header m-0 mt-1">Photos Uploaded</p>
           <div className="d-flex flex-wrap">
             {
@@ -46,7 +51,17 @@ function IncidentCard({ incident, onSelectIncident, onDeleteIncident }) {
               event.stopPropagation();
               onDeleteIncident();
             }}>Delete</button>
+          </div>
         </div>
+        { !_.isEmpty(errors) &&
+          <div class="alert alert-danger mt-3 mb-0" role="alert">
+            <p className="mb-1" style={{ fontSize: 14 }}>The following fields are not filled:</p>
+            <ul className="pl-4 mb-0">
+              { errors.map(error => 
+              <li style={{ fontSize: 14 }}><b>{error}</b></li>)}
+            </ul>
+          </div>
+        }
       </Card.Body>
     </Card>
   );
@@ -71,6 +86,27 @@ function shallowCompare(objectA, objectB) {
   return true
 }
 
+const schema = Joi.object({
+  id: Joi.string(),
+  incident_no: Joi.string().not().empty().messages({
+    'string.empty': "Incident no is empty"
+  }),
+  dispatchDate: Joi.any(),
+  dispatchTime: Joi.any(),
+  arrivalTime: Joi.any(),
+  incidentLocation: Joi.string().not().empty(),
+  premiseOwner: Joi.string().not().empty(),
+  uenNumber: Joi.string().not().empty(),
+  accompanyingPerson: Joi.string().not().empty(),
+  classificationAndLocation: Joi.string().not().empty(),
+  personCaseWasTransferredTo: Joi.string().not().empty(),
+  otherRemarks: Joi.string().optional(),
+  detector: Joi.array(),
+  sub_alarm_panel: Joi.array(),
+  main_alarm_panel: Joi.array(),
+  others: Joi.array()
+})
+
 function Incidents({
   incidents, onCreateIncident, onSelectIncident, onDeleteIncident, basicInformation, updateBasicInformation, onResetApplication, createIncidentCardRef
 }) {
@@ -80,6 +116,7 @@ function Incidents({
 
 
   const watchAllInputs = watch()
+  const [errors, setErrors] = useState({})
 
   useEffect(() => {
     reset(basicInformation)
@@ -116,6 +153,18 @@ function Incidents({
   async function generateSlides(form) {
     const { station, rota, dutyDate, callSign, pumpOperator, sectionCommander } = form
     const generatedPptx = PptxGenerator.createPowerPoint();
+    for (const incident of incidents) {
+      const validationResult = schema.validate(incident, { abortEarly: false })
+      if (!validationResult.error) {
+        continue
+      }
+
+      const { error: { details }} = validationResult
+      const fieldsWithErrors = details.map(detail => detail.context.key)
+      setErrors(prevState => ({...prevState, [incident.id]: fieldsWithErrors}))
+      return
+    }
+      
     for (const incident of incidents) {
       PptxGenerator.addInformationSlideAsTable(generatedPptx, {
         ...incident,
@@ -240,6 +289,7 @@ function Incidents({
                 incident={incident}
                 onSelectIncident={() => onSelectIncident(incident)}
                 onDeleteIncident={() => onDeleteIncident(incident)}
+                errors={errors[incident.id]}
               />
             ))
           }
