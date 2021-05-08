@@ -17,6 +17,7 @@
     "change-case": "^4.1.1",
     "file-saver": "^2.0.5",
     "idb-keyval": "^5.0.2",
+    "joi": "^17.4.0",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
     "pptxgenjs": "^3.3.1",
