@@ -15,8 +15,10 @@ import _ from 'lodash';
 
 function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
     const { register, handleSubmit, control, setValue: setFormValue, getValues, setError } = useForm({
-        defaultValues: incident
+        defaultValues: incident,
+
     })
+    console.log(getValues())
     const [imageToCrop, setImageToCrop] = useState({ photoCategory: { id: "", formLabel: "" }, src: "" })
     const [shouldShowNoPhotoUploadError, setShouldShowNoPhotoUploadError] = useState(false)
 
@@ -81,7 +83,7 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                 <Container className="pt-2 pb-1">
                     <Form.Group>
                         <Form.Label>Incident No.</Form.Label>
-                        <Form.Control required ref={register} name="incident_no" placeholder="" />
+                        <Form.Control ref={register} name="incident_no" placeholder="" />
                     </Form.Group>
                     <Form.Row>
                         <Col>
@@ -142,37 +144,37 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Incident Location</Form.Label>
-                        <Form.Control required ref={register} name="incidentLocation" placeholder="e.g 123 Teck Street" />
+                        <Form.Control ref={register} name="incidentLocation" placeholder="e.g 123 Teck Street" />
                     </Form.Group>
                     <Form.Row>
                         <Col>
                             <Form.Group>
                                 <Form.Label>Premises owner</Form.Label>
-                                <Form.Control required ref={register} name="premiseOwner" placeholder="e.g Unity Pte. Ltd." />
+                                <Form.Control ref={register} name="premiseOwner" placeholder="e.g Unity Pte. Ltd." />
                             </Form.Group>
                         </Col>
                         <Col>
                             <Form.Group>
                                 <Form.Label>Premises' UEN</Form.Label>
-                                <Form.Control required ref={register} name="uenNumber" placeholder="e.g T09LL0001B" />
+                                <Form.Control ref={register} name="uenNumber" placeholder="e.g T09LL0001B" />
                             </Form.Group>
                         </Col>
                     </Form.Row>
                     <Form.Group>
                         <Form.Label>Accompanying Person Information</Form.Label>
-                        <Form.Control required ref={register} name="accompanyingPerson" placeholder="e.g Mr Devan, Technician, 92345678" />
+                        <Form.Control ref={register} name="accompanyingPerson" placeholder="e.g Mr Devan, Technician, 92345678" />
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Classification & Location</Form.Label>
-                        <Form.Control as="textarea" required ref={register} name="classificationAndLocation" placeholder="e.g False alarm malfunction of detector at lift lobby" />
+                        <Form.Control as="textarea" ref={register} name="classificationAndLocation" placeholder="e.g False alarm malfunction of detector at lift lobby" />
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Case handed over to</Form.Label>
-                        <Form.Control required ref={register} name="personCaseWasTransferredTo" placeholder="e.g SGT T123456 (Boon Lay NPC)" />
+                        <Form.Control ref={register} name="personCaseWasTransferredTo" placeholder="e.g SGT T123456 (Boon Lay NPC)" />
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Other remarks</Form.Label>
-                        <Form.Control as="textarea" required ref={register} name="otherRemarks" placeholder="Enter other remarks here" />
+                        <Form.Control as="textarea" ref={register} name="otherRemarks" placeholder="Enter other remarks here" />
                     </Form.Group>
                     {/* <Form.Group>
                 <Form.Label>Stop Message</Form.Label>
