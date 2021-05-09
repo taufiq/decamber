@@ -55,12 +55,12 @@ function IncidentCard({ incident, onSelectIncident, onDeleteIncident, errors }) 
         </div>
         { !_.isEmpty(errors) &&
           <div class="alert alert-danger mt-3 mb-0" role="alert">
-            <p className="mb-1" style={{ fontSize: 14 }}>The following fields are not filled:</p>
+            { !_.isEmpty(errors?.inputFields) && <p className="mb-1" style={{ fontSize: 14 }}>The following fields are not filled:</p>}
             <ul className="pl-4 mb-0">
-              { errors.inputFields.map(error => 
+              { errors?.inputFields?.map(error => 
               <li style={{ fontSize: 14 }}><b>{error}</b></li>)}
             </ul>
-              <hr className="px-0"/>
+              { !_.isEmpty(errors?.inputFields) && errors?.noPhotos && <hr className="px-0"/> }
               { errors.noPhotos && <p className="mb-0">Please upload a photo as well.</p>}
           </div>
         }
@@ -152,21 +152,37 @@ function Incidents({
 
   }, [watchAllInputs])
 
+
+function validateIncidentForm(incident) {
+  const validationResult = schema.validate(incident, { abortEarly: false })
+  let noPhotos = false;
+  if (_.isEmpty(incident.main_alarm_panel) && _.isEmpty(incident.detector) && _.isEmpty(incident.sub_alarm_panel) && _.isEmpty(incident.others)) {
+    noPhotos = true
+  }
+
+  if (!validationResult.error && !noPhotos) {
+    return null
+  }
+
+  let inputFields = []
+
+  if (validationResult.error) {
+    const { error: { details }} = validationResult
+    inputFields = details.map(detail => detail.context.key)
+  }
+
+  return { errors: { inputFields, noPhotos } }
+}
   async function generateSlides(form) {
     const { station, rota, dutyDate, callSign, pumpOperator, sectionCommander } = form
     const generatedPptx = PptxGenerator.createPowerPoint();
     for (const incident of incidents) {
-      const validationResult = schema.validate(incident, { abortEarly: false })
-      if (!validationResult.error) {
-        continue
-      }
+      const validationResult = validateIncidentForm(incident)
+      
+      if (!validationResult) continue
 
-      const { error: { details }} = validationResult
-      let inputFields = details.map(detail => detail.context.key)
-      let noPhotos = false
-      if (_.isEmpty(incident.main_alarm_panel) && _.isEmpty(incident.detector) && _.isEmpty(incident.sub_alarm_panel) && _.isEmpty(incident.others)) {
-        noPhotos = true
-      }
+      const { errors: { inputFields, noPhotos } } = validationResult
+
       setErrors(prevState => ({...prevState, [incident.id]: { inputFields, noPhotos }}))
       return
     }
