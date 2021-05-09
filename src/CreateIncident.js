@@ -24,10 +24,10 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
 
     const onFormSubmit = async (form) => {
         const photoCategoryIds = photoCategories.map(category => category.id);
-        if (_.every(getValues(photoCategoryIds), (photoCategoryValue) => _.isEmpty(photoCategoryValue))) {
-            setShouldShowNoPhotoUploadError(true)
-            return
-        };
+        // if (_.every(getValues(photoCategoryIds), (photoCategoryValue) => _.isEmpty(photoCategoryValue))) {
+        //     setShouldShowNoPhotoUploadError(true)
+        //     return
+        // };
         const formToSubmit = Object.assign({}, form)
         if (incident.id) formToSubmit.id = incident.id
         onSubmit(formToSubmit)
