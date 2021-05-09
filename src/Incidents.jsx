@@ -10,7 +10,52 @@ import { useEffect, useState } from 'react';
 import * as IDBManager from 'idb-keyval';
 import Joi, { valid } from 'joi';
 
-
+const formFields = [
+  {
+      id: 'incident_no',
+      label: 'Incident No.',
+  },
+  {
+      id: 'dispatchDate',
+      label: 'Date Dispatched',
+  },
+  {
+      id: 'dispatchTime',
+      label: 'Time Dispatched',
+  },
+  {
+      id: 'arrivalTime',
+      label: 'Time Arrived',
+  },
+  {
+      id: 'incidentLocation',
+      label: 'Incident Location',
+  },
+  {
+      id: 'premiseOwner',
+      label: 'Premises Owner',
+  },
+  {
+      id: 'uenNumber',
+      label: 'Premises\' UEN',
+  },
+  {
+      id: 'accompanyingPerson',
+      label: 'Accompanying Person Information',
+  },
+  {
+      id: 'classificationAndLocation',
+      label: 'Classification and Location',
+  },
+  {
+      id: 'personCaseWasTransferredTo',
+      label: 'Case handed over to',
+  },
+  {
+      id: 'otherRemarks',
+      label: 'Other Remarks',
+  },
+]
 function IncidentCard({ incident, onSelectIncident, onDeleteIncident, errors }) {
   const photos = _.chain(incident)
     .pick(_.map(photoCategories, (category) => category.id))
@@ -58,7 +103,7 @@ function IncidentCard({ incident, onSelectIncident, onDeleteIncident, errors }) 
             { !_.isEmpty(errors?.inputFields) && <p className="mb-1" style={{ fontSize: 14 }}>The following fields are not filled:</p>}
             <ul className="pl-4 mb-0">
               { errors?.inputFields?.map(error => 
-              <li style={{ fontSize: 14 }}><b>{error}</b></li>)}
+              <li style={{ fontSize: 14 }}><b>{formFields.filter(field => field.id === error)[0]?.label}</b></li>)}
             </ul>
               { !_.isEmpty(errors?.inputFields) && errors?.noPhotos && <hr className="px-0"/> }
               { errors.noPhotos && <p className="mb-0">Please upload a photo as well.</p>}
