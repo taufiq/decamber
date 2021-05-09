@@ -8,7 +8,7 @@ import moment, { isMoment } from 'moment'
 import { photoCategories } from './Constants'
 import { useEffect, useState } from 'react';
 import * as IDBManager from 'idb-keyval';
-import Joi from 'joi';
+import Joi, { valid } from 'joi';
 
 
 function IncidentCard({ incident, onSelectIncident, onDeleteIncident, errors }) {
@@ -57,9 +57,11 @@ function IncidentCard({ incident, onSelectIncident, onDeleteIncident, errors }) 
           <div class="alert alert-danger mt-3 mb-0" role="alert">
             <p className="mb-1" style={{ fontSize: 14 }}>The following fields are not filled:</p>
             <ul className="pl-4 mb-0">
-              { errors.map(error => 
+              { errors.inputFields.map(error => 
               <li style={{ fontSize: 14 }}><b>{error}</b></li>)}
             </ul>
+              <hr className="px-0"/>
+              { errors.noPhotos && <p className="mb-0">Please upload a photo as well.</p>}
           </div>
         }
       </Card.Body>
@@ -94,12 +96,12 @@ const schema = Joi.object({
   dispatchDate: Joi.any(),
   dispatchTime: Joi.any(),
   arrivalTime: Joi.any(),
-  incidentLocation: Joi.string().not().empty(),
-  premiseOwner: Joi.string().not().empty(),
-  uenNumber: Joi.string().not().empty(),
-  accompanyingPerson: Joi.string().not().empty(),
-  classificationAndLocation: Joi.string().not().empty(),
-  personCaseWasTransferredTo: Joi.string().not().empty(),
+  incidentLocation: Joi.string(),
+  premiseOwner: Joi.string(),
+  uenNumber: Joi.string(),
+  accompanyingPerson: Joi.string(),
+  classificationAndLocation: Joi.string(),
+  personCaseWasTransferredTo: Joi.string(),
   otherRemarks: Joi.string().optional(),
   detector: Joi.array(),
   sub_alarm_panel: Joi.array(),
@@ -160,8 +162,12 @@ function Incidents({
       }
 
       const { error: { details }} = validationResult
-      const fieldsWithErrors = details.map(detail => detail.context.key)
-      setErrors(prevState => ({...prevState, [incident.id]: fieldsWithErrors}))
+      let inputFields = details.map(detail => detail.context.key)
+      let noPhotos = false
+      if (_.isEmpty(incident.main_alarm_panel) && _.isEmpty(incident.detector) && _.isEmpty(incident.sub_alarm_panel) && _.isEmpty(incident.others)) {
+        noPhotos = true
+      }
+      setErrors(prevState => ({...prevState, [incident.id]: { inputFields, noPhotos }}))
       return
     }
       
