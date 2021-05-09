@@ -79,11 +79,11 @@ function addInformationSlideAsTable(pptx, {
         ],
         [
             { text: "Time Dispatched", options: {} },
-            { text: moment(dispatchTime).format("HH:MM:SS"), options: { colspan: 2 } },
+            { text: moment(dispatchTime).format("HH:mm:ss"), options: { colspan: 2 } },
         ],
         [
             { text: "Time Arrived", options: {} },
-            { text: moment(arrivalTime).format("HH:MM:SS"), options: { colspan: 2 } },
+            { text: moment(arrivalTime).format("HH:mm:ss"), options: { colspan: 2 } },
         ],
         [
             { text: "Case ID", options: {} },
