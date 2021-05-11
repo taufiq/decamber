@@ -213,26 +213,40 @@ Other remarks: ${otherRemarks}`,
     }
 }
 
+function getTotalNoOfPhotosfrom(aIncidentCategories) {
+    let total = 0
+    for (const category of photoCategories) {
+        total += aIncidentCategories[category.id].length
+    }
+    return total
+}
 function addImages(pptx, categories, incident_no, otherRemarks) {
     let currImageIndex = 0
     let slide
     const PHOTOS_PER_SLIDE = 5
     const ITEM_OFFSET = 100 / PHOTOS_PER_SLIDE
     let INITIAL_OFFSET = 0
+
+    const totalNoOfPhotos = getTotalNoOfPhotosfrom(categories)
     for (const [category, categoryImages] of Object.entries(categories)) {
         for (const image of categoryImages) {
             if (currImageIndex % PHOTOS_PER_SLIDE === 0) {
                 slide = pptx.addSlide("CONTENT_SLIDE")
                 slide.addText(incident_no, { placeholder: 'title', bold: true })
+                if (currImageIndex + 4 >= totalNoOfPhotos) {
+                    INITIAL_OFFSET = ((5 - (totalNoOfPhotos - currImageIndex)) / 2) * 20
+                } else {
+                    INITIAL_OFFSET = 0
+                }
             }
             slide.addImage({
                 data: image.data,
                 x: `${INITIAL_OFFSET + ITEM_OFFSET * (currImageIndex % PHOTOS_PER_SLIDE)}%`,
-                y: '20.63%',
+                y: '25.63%',
                 sizing: {
                     type: 'contain',
                     w: '20%',
-                    h: '36%',
+                    h: '24%',
                 },
             })
             slide.addText([{
@@ -243,7 +257,7 @@ function addImages(pptx, categories, incident_no, otherRemarks) {
                 }
             }], {
                 x: `${INITIAL_OFFSET + ITEM_OFFSET * (currImageIndex % PHOTOS_PER_SLIDE)}%`,
-                y: '56.63%',
+                y: '50.63%',
                 w: '20%',
                 h: '7.47%'
             })
@@ -254,9 +268,9 @@ function addImages(pptx, categories, incident_no, otherRemarks) {
                         fontSize: 12
                     }
                 }], {
-                    x: `5%`,
-                    y: '65.2%',
-                    w: '90%',
+                    x: `2%`,
+                    y: '60.63%',
+                    w: '96%',
                     h: '10%'
                 })
             }
