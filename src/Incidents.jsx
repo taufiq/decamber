@@ -148,10 +148,11 @@ const schema = Joi.object({
   classificationAndLocation: Joi.string(),
   personCaseWasTransferredTo: Joi.string(),
   otherRemarks: Joi.string().optional(),
-  detector: Joi.array(),
+  overview: Joi.array(),
   sub_alarm_panel: Joi.array(),
   main_alarm_panel: Joi.array(),
-  others: Joi.array()
+  overview_fault: Joi.array(),
+  close_up_fault: Joi.array()
 })
 
 function Incidents({
@@ -201,7 +202,7 @@ function Incidents({
 function validateIncidentForm(incident) {
   const validationResult = schema.validate(incident, { abortEarly: false })
   let noPhotos = false;
-  if (_.isEmpty(incident.main_alarm_panel) && _.isEmpty(incident.detector) && _.isEmpty(incident.sub_alarm_panel) && _.isEmpty(incident.others)) {
+  if (_.isEmpty(incident.main_alarm_panel) && _.isEmpty(incident.overview) && _.isEmpty(incident.sub_alarm_panel) && _.isEmpty(incident.overview_fault) && _.isEmpty(incident.close_up_fault)) {
     noPhotos = true
   }
 
@@ -241,12 +242,11 @@ function validateIncidentForm(incident) {
         sectionCommander,
         pumpOperator,
       })
-      PptxGenerator.addImages(generatedPptx, {
-        detector: incident.detector,
-        sub_alarm_panel: incident.sub_alarm_panel,
-        main_alarm_panel: incident.main_alarm_panel,
-        others: incident.others,
-      }, incident.incident_no, incident.otherRemarks)
+      let pickedImages = {}
+      for (let photoCategory of photoCategories) {
+        pickedImages[photoCategory.id] = incident[photoCategory.id]
+      }
+      PptxGenerator.addImages(generatedPptx, pickedImages, incident.incident_no, incident.otherRemarks)
     }
     PptxGenerator.savePowerPoint(generatedPptx, `S${station}_R${rota}_${dutyDate.format('DDMMYYYY')}`);
   }
