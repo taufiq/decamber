@@ -216,19 +216,22 @@ Other remarks: ${otherRemarks}`,
 function addImages(pptx, categories, incident_no, otherRemarks) {
     let currImageIndex = 0
     let slide
+    const PHOTOS_PER_SLIDE = 5
+    const ITEM_OFFSET = 100 / PHOTOS_PER_SLIDE
+    let INITIAL_OFFSET = 0
     for (const [category, categoryImages] of Object.entries(categories)) {
         for (const image of categoryImages) {
-            if (currImageIndex % 3 === 0) {
+            if (currImageIndex % PHOTOS_PER_SLIDE === 0) {
                 slide = pptx.addSlide("CONTENT_SLIDE")
                 slide.addText(incident_no, { placeholder: 'title', bold: true })
             }
             slide.addImage({
                 data: image.data,
-                x: `${7 + 30 * (currImageIndex % 3)}%`,
+                x: `${INITIAL_OFFSET + ITEM_OFFSET * (currImageIndex % PHOTOS_PER_SLIDE)}%`,
                 y: '20.63%',
                 sizing: {
                     type: 'contain',
-                    w: '25%',
+                    w: '20%',
                     h: '36%',
                 },
             })
@@ -239,9 +242,9 @@ function addImages(pptx, categories, incident_no, otherRemarks) {
                     align: 'center',
                 }
             }], {
-                x: `${7 + 30 * (currImageIndex % 3)}%`,
+                x: `${INITIAL_OFFSET + ITEM_OFFSET * (currImageIndex % PHOTOS_PER_SLIDE)}%`,
                 y: '56.63%',
-                w: '25%',
+                w: '20%',
                 h: '7.47%'
             })
             if (currImageIndex === 0) {
@@ -252,7 +255,7 @@ function addImages(pptx, categories, incident_no, otherRemarks) {
                     }
                 }], {
                     x: `5%`,
-                    y: '61.2%',
+                    y: '65.2%',
                     w: '90%',
                     h: '10%'
                 })
