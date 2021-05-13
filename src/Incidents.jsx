@@ -183,7 +183,6 @@ function Incidents({
     }
   }, [incidents])
 
-  console.log(watchAllInputs)
   useEffect(() => {
     const handler = setTimeout(async () => {
       const storedInformation = await IDBManager.get("GENERAL_INFORMATION")

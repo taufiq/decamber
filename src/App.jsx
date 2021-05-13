@@ -30,6 +30,15 @@ function useIdbValue(queryFn, defaultValue) {
     },
     isLoading,
     error,
+    refetch: async (...args) => {
+      setError(null)
+      try {
+        setData(await queryFn(...args))
+      } catch (settingError) {
+        setError(settingError)
+        throw settingError
+      }
+    },
     data
   }
 }
@@ -46,7 +55,7 @@ function App() {
     return fetchedIncidents
   }, [])
 
-  const { query: fetchBasicInformation, isLoading: isLoadingBasicInformation, data: basicInformation } = useIdbValue(async () => {
+  const { query: fetchBasicInformation, isLoading: isLoadingBasicInformation, refetch: refetchBasicInformation, data: basicInformation } = useIdbValue(async () => {
     const fetchedData = await IDBManager.get('GENERAL_INFORMATION')
     return deserializeBasicInformation(fetchedData)
   }, {
@@ -118,6 +127,7 @@ function App() {
           updateBasicInformation={(newBasicInformation) => {
             const serializedInfo = serializeBasicInformation(newBasicInformation)
             set("GENERAL_INFORMATION", serializedInfo)
+            refetchBasicInformation()
           }}
           onResetApplication={async () => {
             await IDBManager.clear()
