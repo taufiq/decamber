@@ -1,4 +1,4 @@
-import { Card, Container, Button, Navbar, Form, Col, Spinner } from 'react-bootstrap';
+import { Card, Container, Button, Navbar, Form, Col, Spinner, Modal } from 'react-bootstrap';
 import _ from 'lodash';
 import * as PptxGenerator from './pptx/Generator';
 import Datetime from 'react-datetime';
@@ -9,6 +9,8 @@ import { photoCategories } from './Constants'
 import { useEffect, useState } from 'react';
 import * as IDBManager from 'idb-keyval';
 import Joi, { valid } from 'joi';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 const formFields = [
   {
@@ -99,11 +101,14 @@ function IncidentCard({ incident, onSelectIncident, onDeleteIncident, errors }) 
           </div>
         </div>
         {!_.isEmpty(errors) &&
-          <div class="alert alert-danger mt-3 mb-0" role="alert">
+          <div class="alert alert-warning mt-3 mb-0" role="alert">
             {!_.isEmpty(errors?.inputFields) && <p className="mb-1" style={{ fontSize: 14 }}>The following fields are not filled:</p>}
             <ul className="pl-4 mb-0">
-              {errors?.inputFields?.map(error =>
-                <li style={{ fontSize: 14 }}><b>{formFields.filter(field => field.id === error)[0]?.label}</b></li>)}
+              {errors?.inputFields?.map(error => {
+                if (error !== 'noPhotos') {
+                  return <li style={{ fontSize: 14 }}><b>{formFields.filter(field => field.id === error)[0]?.label}</b></li>
+                }
+              })}
             </ul>
             {!_.isEmpty(errors?.inputFields) && errors?.noPhotos && <hr className="px-0" />}
             {errors.noPhotos && <p className="mb-0">Please upload a photo as well.</p>}
@@ -155,6 +160,24 @@ const schema = Joi.object({
   close_up_fault: Joi.array()
 })
 
+function ConfirmationModal({ title, body, onClose, onSuccess, show }) {
+  return (
+    <Modal show={show} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>{title}</Modal.Title>
+      </Modal.Header>
+
+      <Modal.Body>
+        <p>{body}</p>
+      </Modal.Body>
+
+      <Modal.Footer>
+        <Button variant="secondary" onClick={onClose}>Cancel</Button>
+        <Button variant="primary" onClick={onSuccess}>Generate</Button>
+      </Modal.Footer>
+    </Modal>
+  )
+}
 function Incidents({
   incidents, onCreateIncident, onSelectIncident, onDeleteIncident, basicInformation, updateBasicInformation, isLoadingBasicInformation, onResetApplication, createIncidentCardRef
 }) {
@@ -165,6 +188,7 @@ function Incidents({
 
   const watchAllInputs = watch()
   const [errors, setErrors] = useState({})
+  const [isConfirmationModalVisible, setIsConfirmationModalVisible] = useState(false)
 
   useEffect(() => {
     reset(basicInformation)
@@ -219,19 +243,31 @@ function Incidents({
 
     return { errors: { inputFields, noPhotos } }
   }
-  async function generateSlides(form) {
-    const { station, rota, dutyDate, callSign, pumpOperator, sectionCommander } = form
-    const generatedPptx = PptxGenerator.createPowerPoint();
+
+  function onSubmit(form) {
+    let warnings = {}
     for (const incident of incidents) {
       const validationResult = validateIncidentForm(incident)
 
       if (!validationResult) continue
 
-      const { errors: { inputFields, noPhotos } } = validationResult
+      const { inputFields, noPhotos } = validationResult.errors
 
-      setErrors(prevState => ({ ...prevState, [incident.id]: { inputFields, noPhotos } }))
+      const errorToAdd = { [incident.id]: { inputFields, noPhotos } }
+      warnings[incident.id] = errorToAdd[incident.id]
+      setErrors(prevState => ({ ...prevState, ...errorToAdd }))
+    }
+
+    if (_.isEmpty(warnings)) {
+      generateSlides(form)
       return
     }
+    setIsConfirmationModalVisible(true)
+  }
+
+  async function generateSlides(form) {
+    const { station, rota, dutyDate, callSign, pumpOperator, sectionCommander } = form
+    const generatedPptx = PptxGenerator.createPowerPoint();
 
     for (const incident of incidents) {
       PptxGenerator.addInformationSlideAsTable(generatedPptx, {
@@ -248,7 +284,37 @@ function Incidents({
       }
       PptxGenerator.addImages(generatedPptx, pickedImages, incident.incident_no, incident.otherRemarks)
     }
-    PptxGenerator.savePowerPoint(generatedPptx, `S${station}_R${rota}_${dutyDate.format('DDMMYYYY')}`);
+    PptxGenerator.savePowerPoint(generatedPptx, `S${station}_R${rota}_${dutyDate.format('DDMMYYYY')}`)
+
+    // confirmAlert({
+    //   title: 'Confirm Generation?',
+    //   // childrenElement: () => {
+    //   //   if (_.isEmpty(summaryOfWarnings)) return <div></div>;
+    //   //   return (
+    //   //     <div class="alert alert-warning mt-3 mb-0" role="alert">
+    //   //       <ul className="pl-4 mb-0">
+    //   //         {summaryOfWarnings?.map(error => {
+    //   //           if (error !== 'noPhotos') {
+    //   //             return <li style={{ fontSize: 14 }}><b>{formFields.filter(field => field.id === error)[0]?.label}</b></li>
+    //   //           }
+    //   //         })}
+    //   //       </ul>
+    //   //       {!!summaryOfWarnings.filter(warning => warning === 'noPhotos')[0] && <hr className="px-0" />}
+    //   //       {!!summaryOfWarnings.filter(warning => warning === 'noPhotos')[0] && <p className="mb-0">Photos weren't uploaded for some as well</p>}
+    //   //     </div>
+    //   //   )
+    //   // },
+    //   message: 'Some fields in some of the incidents have not been filled out. You can go back to fill it up or proceed with generation',
+    //   buttons: [
+    //     {
+    //       label: 'Generate',
+    //       onClick: () => PptxGenerator.savePowerPoint(generatedPptx, `S${station}_R${rota}_${dutyDate.format('DDMMYYYY')}`)
+    //     },
+    //     {
+    //       label: 'Go back',
+    //     }
+    //   ]
+    // })
   }
   return (
     <>
@@ -258,7 +324,7 @@ function Incidents({
         </Navbar>
       </div>
       <Container className="mt-3">
-        <Form onSubmit={handleSubmit(generateSlides)}>
+        <Form onSubmit={handleSubmit(onSubmit)}>
           <Card className="mt-3">
             <Card.Header>General Information</Card.Header>
             <Card.Body>
@@ -366,7 +432,6 @@ function Incidents({
             ))
           }
           <Card onClick={() => {
-            // updateBasicInformation(watchAllInputs)
             onCreateIncident()
           }} className="dotted mt-3 shadow-sm border border-secondary" ref={createIncidentCardRef} tabIndex="-1" style={{ cursor: 'pointer' }}>
             <Card.Body className="d-flex justify-content-between">
@@ -381,6 +446,16 @@ function Incidents({
         <footer class="my-3 text-muted text-center text-small">
           <p class="mb-1">Facing problems? Report it <a href="https://go.gov.sg/decamerror">here</a></p>
         </footer>
+        <ConfirmationModal 
+          title="Are you sure?"
+          body="Some fields in some of the incidents have not been filled out. You can go back to fill it up or proceed with generation"
+          onClose={() => setIsConfirmationModalVisible(false)}
+          onSuccess={() => {
+            setIsConfirmationModalVisible(false)
+            generateSlides(getValues())
+          }}
+          show={isConfirmationModalVisible}
+        />
       </Container>
     </>
   );
