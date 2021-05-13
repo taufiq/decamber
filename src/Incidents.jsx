@@ -1,4 +1,4 @@
-import { Card, Container, Button, Navbar, Form, Col } from 'react-bootstrap';
+import { Card, Container, Button, Navbar, Form, Col, Spinner } from 'react-bootstrap';
 import _ from 'lodash';
 import * as PptxGenerator from './pptx/Generator';
 import Datetime from 'react-datetime';
@@ -12,48 +12,48 @@ import Joi, { valid } from 'joi';
 
 const formFields = [
   {
-      id: 'incident_no',
-      label: 'Incident No.',
+    id: 'incident_no',
+    label: 'Incident No.',
   },
   {
-      id: 'dispatchDate',
-      label: 'Date Dispatched',
+    id: 'dispatchDate',
+    label: 'Date Dispatched',
   },
   {
-      id: 'dispatchTime',
-      label: 'Time Dispatched',
+    id: 'dispatchTime',
+    label: 'Time Dispatched',
   },
   {
-      id: 'arrivalTime',
-      label: 'Time Arrived',
+    id: 'arrivalTime',
+    label: 'Time Arrived',
   },
   {
-      id: 'incidentLocation',
-      label: 'Incident Location',
+    id: 'incidentLocation',
+    label: 'Incident Location',
   },
   {
-      id: 'premiseOwner',
-      label: 'Premises Owner',
+    id: 'premiseOwner',
+    label: 'Premises Owner',
   },
   {
-      id: 'uenNumber',
-      label: 'Premises\' UEN',
+    id: 'uenNumber',
+    label: 'Premises\' UEN',
   },
   {
-      id: 'accompanyingPerson',
-      label: 'Accompanying Person Information',
+    id: 'accompanyingPerson',
+    label: 'Accompanying Person Information',
   },
   {
-      id: 'classificationAndLocation',
-      label: 'Classification and Location',
+    id: 'classificationAndLocation',
+    label: 'Classification and Location',
   },
   {
-      id: 'personCaseWasTransferredTo',
-      label: 'Case handed over to',
+    id: 'personCaseWasTransferredTo',
+    label: 'Case handed over to',
   },
   {
-      id: 'otherRemarks',
-      label: 'Other Remarks',
+    id: 'otherRemarks',
+    label: 'Other Remarks',
   },
 ]
 function IncidentCard({ incident, onSelectIncident, onDeleteIncident, errors }) {
@@ -70,43 +70,43 @@ function IncidentCard({ incident, onSelectIncident, onDeleteIncident, errors }) 
       <Card.Body className="d-flex flex-column">
         <div className="d-flex justify-content-between align-items-center">
           <div>
-          <p className="incident-card-header m-0">Incident No.</p>
-          {_.isEmpty(incident.incident_no) ? 
-            <p className="mb-0" style={{ fontStyle: 'italic' }}>Incident no. not filled in</p>
-            : incident.incident_no
-        }
-          <p className="incident-card-header m-0 mt-1">Photos Uploaded</p>
-          <div className="d-flex flex-wrap">
-            {
-              _.isEmpty(photos) ?
-                <p className="mb-0" style={{ fontStyle: 'italic' }}>No photos uploaded</p>
-                : photos.map((photo) => (
-                  <div key={photo.data} className="rounded bg-dark mr-3 mt-2" style={{ width: "4rem", height: "4rem" }}>
-                    <img src={photo.data} style={{ objectFit: "contain", width: '100%', height: '100%' }} />
-                  </div>
-                ))}
+            <p className="incident-card-header m-0">Incident No.</p>
+            {_.isEmpty(incident.incident_no) ?
+              <p className="mb-0" style={{ fontStyle: 'italic' }}>Incident no. not filled in</p>
+              : incident.incident_no
+            }
+            <p className="incident-card-header m-0 mt-1">Photos Uploaded</p>
+            <div className="d-flex flex-wrap">
+              {
+                _.isEmpty(photos) ?
+                  <p className="mb-0" style={{ fontStyle: 'italic' }}>No photos uploaded</p>
+                  : photos.map((photo) => (
+                    <div key={photo.data} className="rounded bg-dark mr-3 mt-2" style={{ width: "4rem", height: "4rem" }}>
+                      <img src={photo.data} style={{ objectFit: "contain", width: '100%', height: '100%' }} />
+                    </div>
+                  ))}
+            </div>
+          </div>
+          <div className="d-flex flex-column">
+            <button type="button" className="btn-primary rounded px-4 py-2">Edit</button>
+            <button
+              className="btn-danger rounded px-4 mt-2 py-2"
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation();
+                onDeleteIncident();
+              }}>Delete</button>
           </div>
         </div>
-        <div className="d-flex flex-column">
-          <button type="button" className="btn-primary rounded px-4 py-2">Edit</button>
-          <button
-            className="btn-danger rounded px-4 mt-2 py-2"
-            type="button"
-            onClick={(event) => {
-              event.stopPropagation();
-              onDeleteIncident();
-            }}>Delete</button>
-          </div>
-        </div>
-        { !_.isEmpty(errors) &&
+        {!_.isEmpty(errors) &&
           <div class="alert alert-danger mt-3 mb-0" role="alert">
-            { !_.isEmpty(errors?.inputFields) && <p className="mb-1" style={{ fontSize: 14 }}>The following fields are not filled:</p>}
+            {!_.isEmpty(errors?.inputFields) && <p className="mb-1" style={{ fontSize: 14 }}>The following fields are not filled:</p>}
             <ul className="pl-4 mb-0">
-              { errors?.inputFields?.map(error => 
-              <li style={{ fontSize: 14 }}><b>{formFields.filter(field => field.id === error)[0]?.label}</b></li>)}
+              {errors?.inputFields?.map(error =>
+                <li style={{ fontSize: 14 }}><b>{formFields.filter(field => field.id === error)[0]?.label}</b></li>)}
             </ul>
-              { !_.isEmpty(errors?.inputFields) && errors?.noPhotos && <hr className="px-0"/> }
-              { errors.noPhotos && <p className="mb-0">Please upload a photo as well.</p>}
+            {!_.isEmpty(errors?.inputFields) && errors?.noPhotos && <hr className="px-0" />}
+            {errors.noPhotos && <p className="mb-0">Please upload a photo as well.</p>}
           </div>
         }
       </Card.Body>
@@ -156,7 +156,7 @@ const schema = Joi.object({
 })
 
 function Incidents({
-  incidents, onCreateIncident, onSelectIncident, onDeleteIncident, basicInformation, updateBasicInformation, onResetApplication, createIncidentCardRef
+  incidents, onCreateIncident, onSelectIncident, onDeleteIncident, basicInformation, updateBasicInformation, isLoadingBasicInformation, onResetApplication, createIncidentCardRef
 }) {
   const { register, handleSubmit, getValues, setValue, control, watch, reset, trigger } = useForm({
     defaultValues: basicInformation
@@ -183,6 +183,7 @@ function Incidents({
     }
   }, [incidents])
 
+  console.log(watchAllInputs)
   useEffect(() => {
     const handler = setTimeout(async () => {
       const storedInformation = await IDBManager.get("GENERAL_INFORMATION")
@@ -199,40 +200,40 @@ function Incidents({
   }, [watchAllInputs])
 
 
-function validateIncidentForm(incident) {
-  const validationResult = schema.validate(incident, { abortEarly: false })
-  let noPhotos = false;
-  if (_.isEmpty(incident.main_alarm_panel) && _.isEmpty(incident.overview) && _.isEmpty(incident.sub_alarm_panel) && _.isEmpty(incident.overview_fault) && _.isEmpty(incident.close_up_fault)) {
-    noPhotos = true
+  function validateIncidentForm(incident) {
+    const validationResult = schema.validate(incident, { abortEarly: false })
+    let noPhotos = false;
+    if (_.isEmpty(incident.main_alarm_panel) && _.isEmpty(incident.overview) && _.isEmpty(incident.sub_alarm_panel) && _.isEmpty(incident.overview_fault) && _.isEmpty(incident.close_up_fault)) {
+      noPhotos = true
+    }
+
+    if (!validationResult.error && !noPhotos) {
+      return null
+    }
+
+    let inputFields = []
+
+    if (validationResult.error) {
+      const { error: { details } } = validationResult
+      inputFields = details.map(detail => detail.context.key)
+    }
+
+    return { errors: { inputFields, noPhotos } }
   }
-
-  if (!validationResult.error && !noPhotos) {
-    return null
-  }
-
-  let inputFields = []
-
-  if (validationResult.error) {
-    const { error: { details }} = validationResult
-    inputFields = details.map(detail => detail.context.key)
-  }
-
-  return { errors: { inputFields, noPhotos } }
-}
   async function generateSlides(form) {
     const { station, rota, dutyDate, callSign, pumpOperator, sectionCommander } = form
     const generatedPptx = PptxGenerator.createPowerPoint();
     for (const incident of incidents) {
       const validationResult = validateIncidentForm(incident)
-      
+
       if (!validationResult) continue
 
       const { errors: { inputFields, noPhotos } } = validationResult
 
-      setErrors(prevState => ({...prevState, [incident.id]: { inputFields, noPhotos }}))
+      setErrors(prevState => ({ ...prevState, [incident.id]: { inputFields, noPhotos } }))
       return
     }
-      
+
     for (const incident of incidents) {
       PptxGenerator.addInformationSlideAsTable(generatedPptx, {
         ...incident,
@@ -262,91 +263,96 @@ function validateIncidentForm(incident) {
           <Card className="mt-3">
             <Card.Header>General Information</Card.Header>
             <Card.Body>
-              <Form.Row>
-                <Col>
-                  <Form.Group>
-                    <Form.Label>Station</Form.Label>
-                    <Form.Control as="select" ref={register} name="station">
-                      <option>11</option>
-                      <option>12</option>
-                      <option>13</option>
-                      <option>14</option>
-                      <option>15</option>
-                      <option>16</option>
-                      <option>17</option>
-                      <option>18</option>
-                      <option>21</option>
-                      <option>22</option>
-                      <option>23</option>
-                      <option>24</option>
-                      <option>31</option>
-                      <option>32</option>
-                      <option>33</option>
-                      <option>34</option>
-                      <option>41</option>
-                      <option>42</option>
-                      <option>43</option>
-                      <option>44</option>
-                      <option>45</option>
-                    </Form.Control>
-                  </Form.Group>
-                </Col>
-                <Col>
-                  <Form.Group>
-                    <Form.Label>Rota</Form.Label>
-                    <Form.Control as="select" ref={register} name="rota">
-                      <option>1</option>
-                      <option>2</option>
-                      <option>3</option>
-                    </Form.Control>
-                  </Form.Group>
-                </Col>
-              </Form.Row>
-              <Form.Row>
-                <Col>
-                  <Form.Group>
-                    <Form.Label>Duty Date</Form.Label>
-                    <Controller
-                      control={control}
-                      name="dutyDate"
-                      render={({ onChange, value }) => (
-                        <Datetime
-                          value={value}
-                          timeFormat=""
-                          onChange={(newDate) => onChange(newDate)}
+              {isLoadingBasicInformation && <Spinner animation="border" />}
+              {!isLoadingBasicInformation &&
+                <>
+                  <Form.Row>
+                    <Col>
+                      <Form.Group>
+                        <Form.Label>Station</Form.Label>
+                        <Form.Control as="select" ref={register} name="station">
+                          <option>11</option>
+                          <option>12</option>
+                          <option>13</option>
+                          <option>14</option>
+                          <option>15</option>
+                          <option>16</option>
+                          <option>17</option>
+                          <option>18</option>
+                          <option>21</option>
+                          <option>22</option>
+                          <option>23</option>
+                          <option>24</option>
+                          <option>31</option>
+                          <option>32</option>
+                          <option>33</option>
+                          <option>34</option>
+                          <option>41</option>
+                          <option>42</option>
+                          <option>43</option>
+                          <option>44</option>
+                          <option>45</option>
+                        </Form.Control>
+                      </Form.Group>
+                    </Col>
+                    <Col>
+                      <Form.Group>
+                        <Form.Label>Rota</Form.Label>
+                        <Form.Control as="select" ref={register} name="rota">
+                          <option>1</option>
+                          <option>2</option>
+                          <option>3</option>
+                        </Form.Control>
+                      </Form.Group>
+                    </Col>
+                  </Form.Row>
+                  <Form.Row>
+                    <Col>
+                      <Form.Group>
+                        <Form.Label>Duty Date</Form.Label>
+                        <Controller
+                          control={control}
+                          name="dutyDate"
+                          render={({ onChange, value }) => (
+                            <Datetime
+                              value={value}
+                              timeFormat=""
+                              onChange={(newDate) => onChange(newDate)}
+                            />
+                          )
+                          }
                         />
-                      )
-                      }
+                      </Form.Group>
+                    </Col>
+                    <Col>
+                      <Form.Group>
+                        <Form.Label>Call Sign</Form.Label>
+                        <Form.Control ref={register} required name="callSign" placeholder="e.g PL411E" />
+                      </Form.Group>
+                    </Col>
+                  </Form.Row>
+                  <Form.Group>
+                    <Form.Label>SC</Form.Label>
+                    <Form.Control ref={register} required name="sectionCommander" placeholder="e.g SGT(2) Tan A" />
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label>PO</Form.Label>
+                    <Form.Control
+                      onKeyDown={async (key) => {
+                        if (key.code === "Enter") {
+                          const areAllInputsValid = await trigger()
+                          if (!areAllInputsValid) return
+                          createIncidentCardRef.current.focus()
+                        }
+                      }}
+                      ref={register}
+                      required
+                      name="pumpOperator"
+                      placeholder="e.g SGT(3) Muhammed B"
                     />
                   </Form.Group>
-                </Col>
-                <Col>
-                  <Form.Group>
-                    <Form.Label>Call Sign</Form.Label>
-                    <Form.Control ref={register} required name="callSign" placeholder="e.g PL411E" />
-                  </Form.Group>
-                </Col>
-              </Form.Row>
-              <Form.Group>
-                <Form.Label>SC</Form.Label>
-                <Form.Control ref={register} required name="sectionCommander" placeholder="e.g SGT(2) Tan A" />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>PO</Form.Label>
-                <Form.Control
-                  onKeyDown={async (key) => {
-                    if (key.code === "Enter") {
-                      const areAllInputsValid = await trigger()
-                      if (!areAllInputsValid) return
-                      createIncidentCardRef.current.focus()
-                    }
-                  }}
-                  ref={register}
-                  required
-                  name="pumpOperator"
-                  placeholder="e.g SGT(3) Muhammed B"
-                />
-              </Form.Group>
+                </>
+              }
             </Card.Body>
           </Card>
           {
@@ -360,7 +366,10 @@ function validateIncidentForm(incident) {
               />
             ))
           }
-          <Card onClick={onCreateIncident} className="dotted mt-3 shadow-sm border border-secondary" ref={createIncidentCardRef} tabIndex="-1" style={{ cursor: 'pointer' }}>
+          <Card onClick={() => {
+            // updateBasicInformation(watchAllInputs)
+            onCreateIncident()
+          }} className="dotted mt-3 shadow-sm border border-secondary" ref={createIncidentCardRef} tabIndex="-1" style={{ cursor: 'pointer' }}>
             <Card.Body className="d-flex justify-content-between">
               <p className="m-0">Add Incident</p>
               <i className="fas fa-plus align-self-center" />

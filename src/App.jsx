@@ -10,10 +10,10 @@ import * as IDBManager from 'idb-keyval'
 import moment from 'moment'
 import { v4 as uuidv4 } from 'uuid'
 
-function useIdbValue(queryFn) {
+function useIdbValue(queryFn, defaultValue) {
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
-  const [data, setData] = useState([])
+  const [data, setData] = useState(defaultValue)
   return {
     query: async (...args) => {
       setError(null)
@@ -40,25 +40,22 @@ function App() {
   const { query: del, isLoading: isDeleting, error: deleteError } = useIdbValue(IDBManager.del)
   const { query: fetchIncidents, isLoading: isGetting, error: getError, data: incidents } = useIdbValue(async () => {
     const fetchedIncidents = _.chain(await IDBManager.entries())
-                              .filter((entry) => entry[0] !== "GENERAL_INFORMATION")
-                              .map((entry) => ({id: entry[0], ...entry[1]}))
-                              .value()
+      .filter((entry) => entry[0] !== "GENERAL_INFORMATION")
+      .map((entry) => ({ id: entry[0], ...entry[1] }))
+      .value()
     return fetchedIncidents
-  })
+  }, [])
 
-  const { query: fetchBasicInformation, isLoading: isGettingBasicInformation, data: basicInformation} = useIdbValue(async () => {
+  const { query: fetchBasicInformation, isLoading: isLoadingBasicInformation, data: basicInformation } = useIdbValue(async () => {
     const fetchedData = await IDBManager.get('GENERAL_INFORMATION')
-    if (fetchedData === undefined) {
-      return {
-        station: "42",
-        rota: "1",
-        callSign: "",
-        sectionCommander: "",
-        pumpOperator: "",
-        dutyDate: moment()
-      }
-    }
     return deserializeBasicInformation(fetchedData)
+  }, {
+    station: "11",
+    rota: "1",
+    callSign: "",
+    sectionCommander: "",
+    pumpOperator: "",
+    dutyDate: moment()
   })
 
   useEffect(async () => {
@@ -101,7 +98,7 @@ function App() {
 
     return serializedBasicInformation
   }
-  
+
   return (
     !incident
       ? (
@@ -117,6 +114,7 @@ function App() {
           }}
           createIncidentCardRef={createIncidentCardRef}
           basicInformation={basicInformation}
+          isLoadingBasicInformation={isLoadingBasicInformation}
           updateBasicInformation={(newBasicInformation) => {
             const serializedInfo = serializeBasicInformation(newBasicInformation)
             set("GENERAL_INFORMATION", serializedInfo)
