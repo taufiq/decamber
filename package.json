@@ -23,6 +23,7 @@
     "pptxgenjs": "^3.3.1",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.0",
+    "react-confirm-alert": "^2.7.0",
     "react-datetime": "^3.0.4",
     "react-dom": "^17.0.1",
     "react-dropzone": "^11.2.4",
