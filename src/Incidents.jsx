@@ -282,7 +282,7 @@ function Incidents({
       })
       let pickedImages = {}
       for (let photoCategory of photoCategories) {
-        pickedImages[photoCategory.id] = incident[photoCategory.id]
+        pickedImages[photoCategory.id] = incident[photoCategory.id] || []
       }
       PptxGenerator.addImages(generatedPptx, pickedImages, incident.incident_no, incident.otherRemarks)
     }
