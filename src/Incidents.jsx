@@ -158,7 +158,7 @@ const schema = Joi.object({
   main_alarm_panel: Joi.array(),
   overview_fault: Joi.array(),
   close_up_fault: Joi.array()
-})
+}).unknown(true)
 
 function ConfirmationModal({ title, body, onClose, onSuccess, show }) {
   return (
@@ -238,6 +238,7 @@ function Incidents({
 
     if (validationResult.error) {
       const { error: { details } } = validationResult
+      console.log(details)
       inputFields = details.map(detail => detail.context.key)
     }
 
@@ -252,6 +253,7 @@ function Incidents({
       if (!validationResult) continue
 
       const { inputFields, noPhotos } = validationResult.errors
+      console.log(inputFields)
 
       const errorToAdd = { [incident.id]: { inputFields, noPhotos } }
       warnings[incident.id] = errorToAdd[incident.id]
