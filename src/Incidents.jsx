@@ -153,11 +153,11 @@ const schema = Joi.object({
   classificationAndLocation: Joi.string(),
   personCaseWasTransferredTo: Joi.string(),
   otherRemarks: Joi.string().optional(),
-  overview: Joi.array(),
-  sub_alarm_panel: Joi.array(),
-  main_alarm_panel: Joi.array(),
-  overview_fault: Joi.array(),
-  close_up_fault: Joi.array()
+  overview: Joi.array().default([]),
+  sub_alarm_panel: Joi.array().default([]),
+  main_alarm_panel: Joi.array().default([]),
+  overview_fault: Joi.array().default([]),
+  close_up_fault: Joi.array().default([])
 }).unknown(true)
 
 function ConfirmationModal({ title, body, onClose, onSuccess, show }) {
@@ -359,6 +359,8 @@ function Incidents({
                           <option>43</option>
                           <option>44</option>
                           <option>45</option>
+                          <option>81</option>
+                          <option>82</option>
                         </Form.Control>
                       </Form.Group>
                     </Col>
