@@ -6,7 +6,7 @@ import "react-datetime/css/react-datetime.css";
 import { Controller, useForm } from 'react-hook-form'
 import moment, { isMoment } from 'moment'
 import { photoCategories } from './Constants'
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as IDBManager from 'idb-keyval';
 import Joi, { valid } from 'joi';
 import { confirmAlert } from 'react-confirm-alert';
@@ -189,7 +189,22 @@ function Incidents({
   const watchAllInputs = watch()
   const [errors, setErrors] = useState({})
   const [isConfirmationModalVisible, setIsConfirmationModalVisible] = useState(false)
+  const [shouldShake, setShouldShake] = useState(false)
 
+  const formRef = useRef();
+
+  useEffect(() => {
+    let handler
+    if (shouldShake) {
+      handler = setTimeout(() => setShouldShake(false), 600)
+    }
+
+    return () => {
+      if (handler) {
+        clearTimeout(handler)
+      }
+    }
+  }, [shouldShake])
   useEffect(() => {
     reset(basicInformation)
   }, [basicInformation])
@@ -326,7 +341,7 @@ function Incidents({
         </Navbar>
       </div>
       <Container className="mt-3">
-        <Form onSubmit={handleSubmit(onSubmit)}>
+        <Form onSubmit={handleSubmit(onSubmit)} ref={formRef}>
           <Card className="mt-3">
             <Card.Header>General Information</Card.Header>
             <Card.Body>
@@ -437,14 +452,21 @@ function Incidents({
           }
           <Card onClick={() => {
             onCreateIncident()
-          }} className="dotted mt-3 shadow-sm border border-secondary" ref={createIncidentCardRef} tabIndex="-1" style={{ cursor: 'pointer' }}>
+          }} className={`dotted mt-3 shadow-sm border border-secondary ${shouldShake && 'shake'}`} ref={createIncidentCardRef} tabIndex="-1" style={{ cursor: 'pointer' }}>
             <Card.Body className="d-flex justify-content-between">
               <p className="m-0">Add Incident</p>
               <i className="fas fa-plus align-self-center" />
             </Card.Body>
           </Card>
           <Button type="button" className="mt-4 mb-3 bg-secondary" onClick={onResetApplication}>Reset All</Button>
-          <Button type="submit" className="mt-4 mb-3 float-right" disabled={_.isEmpty(incidents)}>Generate Powerpoint</Button>
+          <Button type="button" className="mt-4 mb-3 float-right" onClick={() => {
+            if (_.isEmpty(incidents)) {
+              setShouldShake(true)
+              return
+            }
+              formRef.current.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }))
+          }}
+          >Generate Powerpoint</Button>
         </Form>
         <div class="dropdown-divider"></div>
         <footer class="my-3 text-muted text-center text-small">
