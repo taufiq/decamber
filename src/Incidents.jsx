@@ -101,7 +101,7 @@ function IncidentCard({ incident, onSelectIncident, onDeleteIncident, errors }) 
           </div>
         </div>
         {!_.isEmpty(errors) &&
-          <div class="alert alert-warning mt-3 mb-0" role="alert">
+          <div className="alert alert-warning mt-3 mb-0" role="alert">
             {!_.isEmpty(errors?.inputFields) && <p className="mb-1" style={{ fontSize: 14 }}>The following fields are not filled:</p>}
             <ul className="pl-4 mb-0">
               {errors?.inputFields?.map(error => {
@@ -218,7 +218,7 @@ function Incidents({
 
   useEffect(() => {
     if (_.isEmpty(incidents)) {
-      createIncidentCardRef.current?.focus()
+      createIncidentCardRef?.current?.focus()
     }
   }, [incidents])
 
@@ -345,7 +345,7 @@ function Incidents({
           <Card className="mt-3">
             <Card.Header>General Information</Card.Header>
             <Card.Body>
-              {isLoadingBasicInformation && <Spinner animation="border" />}
+              {isLoadingBasicInformation && <Spinner animation="border" data-test-id="Hello"/>}
               {!isLoadingBasicInformation &&
                 <>
                   <Form.Row>
@@ -468,9 +468,9 @@ function Incidents({
           }}
           >Generate Powerpoint</Button>
         </Form>
-        <div class="dropdown-divider"></div>
-        <footer class="my-3 text-muted text-center text-small">
-          <p class="mb-1">Facing problems? Report it <a href="https://go.gov.sg/decamerror">here</a></p>
+        <div className="dropdown-divider"></div>
+        <footer className="my-3 text-muted text-center text-small">
+          <p className="mb-1">Facing problems? Report it <a href="https://go.gov.sg/decamerror">here</a></p>
         </footer>
         <ConfirmationModal 
           title="Are you sure?"
