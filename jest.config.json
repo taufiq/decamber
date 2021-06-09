@@ -1,0 +1,8 @@
+{
+    "name": "decamber",
+    "jest": {
+        "setupFiles": [
+            "fake-indexeddb/auto"
+        ]
+    }
+  }
