@@ -67,9 +67,9 @@ function App() {
     dutyDate: moment()
   })
 
-  useEffect(async () => {
-    await fetchIncidents()
-    await fetchBasicInformation()
+  useEffect(() => {
+    fetchIncidents()
+    fetchBasicInformation()
   }, [])
 
   function serializeBasicInformation(deserializedInfo) {
