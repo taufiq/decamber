@@ -227,7 +227,7 @@ function Incidents({
       const storedInformation = await IDBManager.get("GENERAL_INFORMATION")
       const hasFormChanged = !shallowCompare(storedInformation, serializeBasicInformation(watchAllInputs))
       if (hasFormChanged) {
-        updateBasicInformation(watchAllInputs)
+        if (updateBasicInformation) updateBasicInformation(watchAllInputs)
       }
     }, 500)
 
@@ -345,14 +345,14 @@ function Incidents({
           <Card className="mt-3">
             <Card.Header>General Information</Card.Header>
             <Card.Body>
-              {isLoadingBasicInformation && <Spinner animation="border" data-test-id="Hello"/>}
+              {isLoadingBasicInformation && <Spinner animation="border" data-testid="loadingSpinner"/>}
               {!isLoadingBasicInformation &&
                 <>
                   <Form.Row>
                     <Col>
                       <Form.Group>
-                        <Form.Label>Station</Form.Label>
-                        <Form.Control as="select" ref={register} name="station">
+                        <Form.Label htmlFor="station">Station</Form.Label>
+                        <Form.Control as="select" ref={register} name="station" id="station">
                           <option>11</option>
                           <option>12</option>
                           <option>13</option>
@@ -381,8 +381,8 @@ function Incidents({
                     </Col>
                     <Col>
                       <Form.Group>
-                        <Form.Label>Rota</Form.Label>
-                        <Form.Control as="select" ref={register} name="rota">
+                        <Form.Label htmlFor="rota">Rota</Form.Label>
+                        <Form.Control as="select" ref={register} name="rota" id="rota">
                           <option>1</option>
                           <option>2</option>
                           <option>3</option>
@@ -393,10 +393,11 @@ function Incidents({
                   <Form.Row>
                     <Col>
                       <Form.Group>
-                        <Form.Label>Duty Date</Form.Label>
+                        <Form.Label htmlFor="dutyDate">Duty Date</Form.Label>
                         <Controller
                           control={control}
                           name="dutyDate"
+                          defaultValue={moment()}
                           render={({ onChange, value }) => (
                             <Datetime
                               value={value}
@@ -410,17 +411,17 @@ function Incidents({
                     </Col>
                     <Col>
                       <Form.Group>
-                        <Form.Label>Call Sign</Form.Label>
-                        <Form.Control ref={register} required name="callSign" placeholder="e.g PL411E" />
+                        <Form.Label htmlFor="callSign">Call Sign</Form.Label>
+                        <Form.Control ref={register} required name="callSign" id="callSign" placeholder="e.g PL411E" />
                       </Form.Group>
                     </Col>
                   </Form.Row>
                   <Form.Group>
-                    <Form.Label>SC</Form.Label>
-                    <Form.Control ref={register} required name="sectionCommander" placeholder="e.g SGT(2) Tan A" />
+                    <Form.Label htmlFor="sectionCommander">SC</Form.Label>
+                    <Form.Control ref={register} required name="sectionCommander" id="sectionCommander" placeholder="e.g SGT(2) Tan A" />
                   </Form.Group>
                   <Form.Group>
-                    <Form.Label>PO</Form.Label>
+                    <Form.Label htmlFor="pumpOperator">PO</Form.Label>
                     <Form.Control
                       onKeyDown={async (key) => {
                         if (key.code === "Enter") {
@@ -432,6 +433,7 @@ function Incidents({
                       ref={register}
                       required
                       name="pumpOperator"
+                      id="pumpOperator"
                       placeholder="e.g SGT(3) Muhammed B"
                     />
                   </Form.Group>
