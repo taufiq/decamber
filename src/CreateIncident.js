@@ -18,7 +18,6 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
         defaultValues: incident,
 
     })
-    console.log(getValues())
     const [imageToCrop, setImageToCrop] = useState({ photoCategory: { id: "", formLabel: "" }, src: "" })
     const [shouldShowNoPhotoUploadError, setShouldShowNoPhotoUploadError] = useState(false)
 
@@ -218,9 +217,9 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                         />
                     }
                 </Container>
-                <div class="dropdown-divider mx-4"></div>
-                <footer class="my-3 text-muted text-center text-small">
-                    <p class="mb-1">Facing problems? Report it <a href="https://go.gov.sg/decamerror">here</a></p>
+                <div className="dropdown-divider mx-4"></div>
+                <footer className="my-3 text-muted text-center text-small">
+                    <p className="mb-1">Facing problems? Report it <a href="https://go.gov.sg/decamerror">here</a></p>
                 </footer>
             </Form>
         </>
