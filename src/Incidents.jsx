@@ -401,6 +401,7 @@ function Incidents({
                           render={({ onChange, value }) => (
                             <Datetime
                               value={value}
+                              inputProps={{ id: "dutyDate" }}
                               timeFormat=""
                               onChange={(newDate) => onChange(newDate)}
                             />
