@@ -81,8 +81,8 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                 </Navbar>
                 <Container className="pt-2 pb-1">
                     <Form.Group>
-                        <Form.Label>Incident No.</Form.Label>
-                        <Form.Control ref={register} name="incident_no" placeholder="" />
+                        <Form.Label htmlFor="incidentNo">Incident No.</Form.Label>
+                        <Form.Control ref={register} name="incident_no" id="incidentNo" placeholder="" />
                     </Form.Group>
                     <Form.Row>
                         <Col>

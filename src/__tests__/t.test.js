@@ -46,6 +46,36 @@ test('Redirects to create incident form', async () => {
     expect(header).toBeInTheDocument()
 })
 
+test('Goes back to Incidents page on cancellling incident creation', async () => {
+    render(<App />);
+    const createIncidentCard = screen.getByText('Add Incident').closest(".card");
+    userEvent.click(createIncidentCard);
+
+    const cancelButton = await screen.findByRole('button', {name: /cancel/i})
+
+    userEvent.click(cancelButton)
+
+    await waitFor(async () => expect((await screen.findByText('Add Incident')).closest(".card")).toBeInTheDocument())
+})
+
+test('Saves incident on creation', async () => {
+    render(<App />);
+    const createIncidentCard = screen.getByText('Add Incident').closest(".card");
+    userEvent.click(createIncidentCard);
+
+    const incidentNoInput = await screen.findByLabelText('Incident No.');
+    userEvent.type(incidentNoInput, 'Test Incident');
+
+    const submitButton = await screen.findByRole('button', {name: /submit/i})
+    userEvent.click(submitButton)
+
+    await waitFor(async () => expect((await screen.findByText('Add Incident')).closest(".card")).toBeInTheDocument())
+    expect(await screen.findByText('Incident No.')).toBeInTheDocument()
+    expect(await screen.findByText('Test Incident')).toBeInTheDocument()
+    expect(await screen.findByRole('button', {name: /edit/i})).toBeInTheDocument()
+    expect(await screen.findByRole('button', {name: /delete/i})).toBeInTheDocument()
+})
+
 test('Shakes on no incidents', async () => {
     render(<App />)
     const createIncidentCard = screen.getByText('Add Incident').closest(".card")
