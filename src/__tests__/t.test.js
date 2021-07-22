@@ -5,6 +5,10 @@ import userEvent from '@testing-library/user-event'
 import App from '../App'
 import * as IDBManager from 'idb-keyval';
 
+afterEach(async () => {
+    await IDBManager.clear()
+})
+
 test('Renders Incidents screen', async () => {
     render(<App />)
 
@@ -74,6 +78,28 @@ test('Saves incident on creation', async () => {
     expect(await screen.findByText('Test Incident')).toBeInTheDocument()
     expect(await screen.findByRole('button', {name: /edit/i})).toBeInTheDocument()
     expect(await screen.findByRole('button', {name: /delete/i})).toBeInTheDocument()
+})
+
+test('Deletes saved incident', async () => {
+    render(<App />);
+    const createIncidentCard = screen.getByText('Add Incident').closest(".card");
+    userEvent.click(createIncidentCard);
+
+    const incidentNoInput = await screen.findByLabelText('Incident No.');
+    userEvent.type(incidentNoInput, 'Test Incident');
+
+    const submitButton = await screen.findByRole('button', {name: /submit/i})
+    userEvent.click(submitButton)
+
+    await waitFor(async () => expect((await screen.findByText('Add Incident')).closest(".card")).toBeInTheDocument())
+    const editButton = await screen.findByRole('button', {name: /edit/i})
+    const deleteButton = await screen.findByRole('button', {name: /delete/i})
+
+    userEvent.click(deleteButton)
+
+    await waitFor(async () => expect(screen.queryByText('Test Incident')).toBeNull())
+
+    expect((await IDBManager.entries()).length).toBe(0)
 })
 
 test('Shakes on no incidents', async () => {
