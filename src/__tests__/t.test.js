@@ -78,6 +78,28 @@ test('Saves incident on creation', async () => {
     expect(await screen.findByText('Test Incident')).toBeInTheDocument()
     expect(await screen.findByRole('button', {name: /edit/i})).toBeInTheDocument()
     expect(await screen.findByRole('button', {name: /delete/i})).toBeInTheDocument()
+
+    // Check if values saved on default are the following
+    const values = await IDBManager.values()
+    expect(values.length).toBe(1)
+
+    const fetchedIncident = values[0]
+    expect(typeof fetchedIncident.arrivalTime).toBe("number")
+    expect(typeof fetchedIncident.dispatchTime).toBe("number")
+    expect(typeof fetchedIncident.dispatchDate).toBe("number")
+    expect(fetchedIncident.incidentLocation).toBe('')
+    expect(fetchedIncident.premiseOwner).toBe('')
+    expect(fetchedIncident.uenNumber).toBe('')
+    expect(fetchedIncident.accompanyingPerson).toBe('')
+    expect(fetchedIncident.classificationAndLocation).toBe('')
+    expect(fetchedIncident.personCaseWasTransferredTo).toBe('')
+    expect(fetchedIncident.otherRemarks).toBe('')
+    expect(fetchedIncident.overview).toEqual([])
+    expect(fetchedIncident.main_alarm_panel).toEqual([])
+    expect(fetchedIncident.sub_alarm_panel).toEqual([])
+    expect(fetchedIncident.overview_fault).toEqual([])
+    expect(fetchedIncident.close_up_fault).toEqual([])
+
 })
 
 test('Deletes saved incident', async () => {
