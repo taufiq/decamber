@@ -124,6 +124,75 @@ test('Deletes saved incident', async () => {
     expect((await IDBManager.entries()).length).toBe(0)
 })
 
+test('Saves on general information edit', async () => {
+    render(<App />)
+
+    const station = await screen.findByDisplayValue('11');
+    const rota = await screen.findByDisplayValue('1');
+    const callSign = await screen.findByLabelText('Call Sign');
+    const sectionCommander = await screen.findByLabelText('SC');
+    const pumpOperator = await screen.findByLabelText('PO');
+    const dutyDate = await screen.findByLabelText('Duty Date');
+
+    userEvent.type(pumpOperator, 'SGT Shami')
+    userEvent.type(sectionCommander, 'SGT Fai')
+    userEvent.type(callSign, 'PL421')
+
+    await waitFor(async () => {
+        expect((await IDBManager.get('GENERAL_INFORMATION'))).toBeTruthy()
+    }, { timeout: 600 })
+
+    const createIncidentCard = screen.getByText('Add Incident').closest(".card");
+    userEvent.click(createIncidentCard)
+
+    const cancelButton = await screen.findByRole('button', {name: /cancel/i})
+    userEvent.click(cancelButton)
+
+    expect(pumpOperator.value).toBe('SGT Shami')
+    expect(sectionCommander.value).toBe('SGT Fai')
+    expect(callSign.value).toBe('PL421')
+    expect(station.value).toBe('11')
+    expect(rota.value).toBe('1')
+
+    const storedGeneralInformation = await IDBManager.get('GENERAL_INFORMATION')
+    expect(storedGeneralInformation.pumpOperator).toBe('SGT Shami')
+    expect(storedGeneralInformation.sectionCommander).toBe('SGT Fai')
+    expect(storedGeneralInformation.callSign).toBe('PL421')
+    expect(storedGeneralInformation.station).toBe('11')
+    expect(storedGeneralInformation.rota).toBe('1')
+
+})
+
+// test('Saves on general information edit and immediate redirect to create incident', async () => {
+//     render(<App />)
+
+//     const station = await screen.findByDisplayValue('11');
+//     const rota = await screen.findByDisplayValue('1');
+//     const callSign = await screen.findByLabelText('Call Sign');
+//     const sectionCommander = await screen.findByLabelText('SC');
+//     const pumpOperator = await screen.findByLabelText('PO');
+//     const dutyDate = await screen.findByLabelText('Duty Date');
+
+//     userEvent.type(pumpOperator, 'SGT Shami')
+//     userEvent.type(sectionCommander, 'SGT Fai')
+//     userEvent.type(callSign, 'PL421')
+
+//     const createIncidentCard = screen.getByText('Add Incident').closest(".card");
+//     userEvent.click(createIncidentCard)
+
+//     const cancelButton = await screen.findByRole('button', {name: /cancel/i})
+//     userEvent.click(cancelButton)
+
+//     const storedGeneralInformation = await IDBManager.get('GENERAL_INFORMATION')
+//     expect(storedGeneralInformation.pumpOperator).toBe('SGT Shami')
+//     expect(storedGeneralInformation.sectionCommander).toBe('SGT Fai')
+//     expect(storedGeneralInformation.callSign).toBe('PL421')
+//     expect(storedGeneralInformation.station).toBe('11')
+//     expect(storedGeneralInformation.rota).toBe('1')
+
+// })
+
+
 test('Shakes on no incidents', async () => {
     render(<App />)
     const createIncidentCard = screen.getByText('Add Incident').closest(".card")
