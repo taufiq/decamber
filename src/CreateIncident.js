@@ -160,10 +160,20 @@ function CreateIncident({ incident, onSubmit, onCancel, error, isSaving }) {
                             </Form.Group>
                         </Col>
                     </Form.Row>
-                    <Form.Group>
-                        <Form.Label>Accompanying Person Information</Form.Label>
-                        <Form.Control ref={register} name="accompanyingPerson" placeholder="e.g Mr Devan, Technician, 92345678" />
-                    </Form.Group>
+                    <Form.Row>
+                        <Col>
+                            <Form.Group>
+                                <Form.Label>Accompanying Person Information</Form.Label>
+                                <Form.Control ref={register} name="accompanyingPerson" placeholder="e.g Mr Devan, Technician" />
+                            </Form.Group>
+                        </Col>
+                        <Col>
+                            <Form.Group>
+                                <Form.Label>Accompanying Person Contact Number</Form.Label>
+                                <Form.Control ref={register} name="accompanyingPersonContactNo" placeholder="e.g 92345678" />
+                            </Form.Group>
+                        </Col>
+                    </Form.Row>
                     <Form.Group>
                         <Form.Label>Classification & Location</Form.Label>
                         <Form.Control as="textarea" ref={register} name="classificationAndLocation" placeholder="e.g False alarm malfunction of detector at lift lobby" />

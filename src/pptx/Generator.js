@@ -53,6 +53,7 @@ function addInformationSlideAsTable(pptx, {
     incidentLocation,
     premiseOwner,
     accompanyingPerson,
+    accompanyingPersonContactNo,
     classificationAndLocation,
     personCaseWasTransferredTo,
     uenNumber,
@@ -105,7 +106,8 @@ function addInformationSlideAsTable(pptx, {
         ],
         [
             { text: "Details Accompanying Person", options: {} },
-            { text: accompanyingPerson, options: { colspan: 2 } },
+            { text: accompanyingPerson, options: { colspan: 1 } },
+            { text: accompanyingPersonContactNo, options: { colspan: 1 } },
         ],
         [
             { text: "Classification", options: {} },

@@ -46,6 +46,10 @@ const formFields = [
     label: 'Accompanying Person Information',
   },
   {
+    id: 'accompanyingPersonContactNo',
+    label: 'Accompanying Person Contact Number',
+  },
+  {
     id: 'classificationAndLocation',
     label: 'Classification and Location',
   },
@@ -150,6 +154,7 @@ const schema = Joi.object({
   premiseOwner: Joi.string(),
   uenNumber: Joi.string(),
   accompanyingPerson: Joi.string(),
+  accompanyingPersonContactNo: Joi.string(),
   classificationAndLocation: Joi.string(),
   personCaseWasTransferredTo: Joi.string(),
   otherRemarks: Joi.string().optional(),
