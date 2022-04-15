@@ -1,4 +1,4 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 import './App.css';
 import React, { useEffect, useRef, useState } from 'react';
 import _ from 'lodash';
