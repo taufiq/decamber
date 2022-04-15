@@ -10,7 +10,7 @@ import * as IDBManager from 'idb-keyval'
 import moment from 'moment'
 import { v4 as uuidv4 } from 'uuid'
 
-function useIdbValue(queryFn, defaultValue) {
+function useIdbValue(queryFn, defaultValue = undefined) {
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [data, setData] = useState(defaultValue)
@@ -90,13 +90,6 @@ function App() {
     for (const key of keysStoringMomentObject) {
       serializedBasicInformation[key] = serializedBasicInformation[key].valueOf()
     }
-
-    return serializedBasicInformation
-  }
-  function deserializeBasicInformation(deserializedInfo) {
-    let serializedBasicInformation = Object.assign({}, deserializedInfo)
-    serializedBasicInformation["arrivalTime"] = moment(serializedBasicInformation["arrivalTime"])
-    serializedBasicInformation["dispatchTime"] = moment(serializedBasicInformation["dispatchTime"])
 
     return serializedBasicInformation
   }
